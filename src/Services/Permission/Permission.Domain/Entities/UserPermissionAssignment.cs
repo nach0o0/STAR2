@@ -1,4 +1,5 @@
-﻿using Shared.Domain.Abstractions;
+﻿using Permission.Domain.Events.UserPermissionAssignments;
+using Shared.Domain.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Permission.Domain.Entities
         // Fabrik-Methode, um eine Rolle zuzuweisen
         public static UserPermissionAssignment CreateForRole(Guid userId, string scope, Guid roleId)
         {
-            return new UserPermissionAssignment
+            var assignment = new UserPermissionAssignment
             {
                 Id = Guid.NewGuid(),
                 UserId = userId,
@@ -31,12 +32,14 @@ namespace Permission.Domain.Entities
                 RoleId = roleId,
                 CreatedAt = DateTime.UtcNow
             };
+            assignment.AddDomainEvent(new UserPermissionAssignmentCreatedEvent(assignment));
+            return assignment;
         }
 
         // Fabrik-Methode, um eine direkte Berechtigung zuzuweisen
         public static UserPermissionAssignment CreateForPermission(Guid userId, string scope, string permissionId)
         {
-            return new UserPermissionAssignment
+            var assignment = new UserPermissionAssignment
             {
                 Id = Guid.NewGuid(),
                 UserId = userId,
@@ -45,6 +48,13 @@ namespace Permission.Domain.Entities
                 PermissionId = permissionId,
                 CreatedAt = DateTime.UtcNow
             };
+            assignment.AddDomainEvent(new UserPermissionAssignmentCreatedEvent(assignment));
+            return assignment;
+        }
+
+        public void PrepareForDeletion()
+        {
+            AddDomainEvent(new UserPermissionAssignmentDeletedEvent(this));
         }
     }
 }

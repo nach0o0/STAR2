@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Shared.Application.Interfaces.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,5 @@ namespace Auth.Application.Features.Commands.RegisterUser
     public record RegisterUserCommand(
         string Email,
         string Password
-    ) : IRequest<Guid>;
+    ) : ICommand<Guid>;
 }

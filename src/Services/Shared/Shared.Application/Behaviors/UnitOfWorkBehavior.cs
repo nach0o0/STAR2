@@ -1,15 +1,12 @@
-﻿using Auth.Application.Interfaces.Persistence;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using Microsoft.Extensions.Logging;
+using Shared.Application.Interfaces.Messaging;
+using Shared.Application.Interfaces.Persistence;
 
 namespace Shared.Application.Behaviors
 {
     public class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+        where TRequest : IBaseCommand
     {
         private readonly IUnitOfWork _unitOfWork;
 

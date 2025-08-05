@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Organization.Contracts.Requests
 {
     public record CreateInvitationRequest(
-        Guid InviteeEmployeeId,
+        string InviteeEmail,
         InvitationTargetEntityType TargetEntityType,
         Guid TargetEntityId
     );

@@ -10,8 +10,4 @@
     <ProjectReference Include="..\..\..\Shared\Shared.Enums\Shared.Enums.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Events\OrganizationService\HourlyRates\" />
-  </ItemGroup>
-
 </Project>

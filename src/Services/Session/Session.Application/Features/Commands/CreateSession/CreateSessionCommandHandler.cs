@@ -43,9 +43,11 @@ namespace Session.Application.Features.Commands.CreateSession
             //    Dieser Service validiert das Basis-Token und holt die Claims.
             var accessToken = await _enrichedTokenService.GenerateEnrichedAccessTokenAsync(command.BasicToken, cancellationToken);
 
-            // 2. Refresh Token generieren und für die Speicherung hashen.
-            var refreshToken = _refreshTokenGenerator.GenerateRefreshToken();
-            var refreshTokenHash = _passwordHasher.HashPassword(refreshToken);
+            // 1. Hole beide Teile vom Generator
+            var (selector, verifier) = _refreshTokenGenerator.Generate();
+
+            // 2. Hashe nur den Verifier
+            var verifierHash = _passwordHasher.HashPassword(verifier);
 
             // 3. UserId aus dem (bereits validierten) Basis-Token extrahieren.
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -61,13 +63,15 @@ namespace Session.Application.Features.Commands.CreateSession
             // 4. Neue ActiveSession-Entität erstellen.
             var session = new ActiveSession(
                 userId,
-                refreshTokenHash,
+                selector,
+                verifierHash,
                 _jwtOptions.RefreshTokenExpirationDays,
                 command.ClientInfo);
 
             await _sessionRepository.AddAsync(session, cancellationToken);
 
-            // 5. Die finalen Tokens zurückgeben.
+            // 4. Kombiniere beide Teile und sende sie an den Client
+            var refreshToken = $"{selector}:{verifier}";
             return (accessToken, refreshToken);
         }
     }

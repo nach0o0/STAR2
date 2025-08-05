@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Organization.Domain.Authorization;
+using Shared.Application.Interfaces.Messaging;
 using Shared.Application.Interfaces.Security;
 using Shared.Application.Security;
 using Shared.Domain.Exceptions;
@@ -12,5 +13,5 @@ namespace Organization.Application.Features.Commands.CreateOrganization
         string Name,
         string Abbreviation,
         Guid? ParentOrganizationId
-    ) : IRequest<Guid>;
+    ) : ICommand<Guid>;
 }

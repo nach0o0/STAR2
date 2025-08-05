@@ -1,19 +1,15 @@
-﻿using Auth.Application.Interfaces.Persistence;
-using Microsoft.Extensions.DependencyInjection;
-using Organization.Application.Interfaces.Persistence;
-using Organization.Infrastructure.Persistence.Repositories;
-using Organization.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Organization.Infrastructure.Security;
-using Shared.Application.Interfaces.Security;
-using MassTransit;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Organization.Application.Features.IntegrationEventConsumers;
+using Organization.Application.Interfaces.Persistence;
+using Organization.Infrastructure.Persistence;
+using Organization.Infrastructure.Persistence.Repositories;
+using Organization.Infrastructure.Security;
+using Shared.Application.Interfaces.Persistence;
+using Shared.Application.Interfaces.Security;
 using Shared.Options;
 
 namespace Organization.Infrastructure
@@ -38,7 +34,7 @@ namespace Organization.Infrastructure
 
             services.AddMassTransit(busConfigurator =>
             {
-                // ... AddConsumers ...
+                busConfigurator.AddConsumer<UserAccountDeletedConsumer>();
 
                 busConfigurator.UsingRabbitMq((context, cfg) =>
                 {

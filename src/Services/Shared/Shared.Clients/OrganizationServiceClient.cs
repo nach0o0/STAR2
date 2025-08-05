@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Organization.Contracts.Responses;
 using Shared.Application.Interfaces.Infrastructure;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace Shared.Clients
@@ -16,17 +17,26 @@ namespace Shared.Clients
             _logger = logger;
         }
 
-        public async Task<(Guid EmployeeId, Guid OrganizationId, List<Guid> EmployeeGroupIds)?> GetEmployeeInfoByUserIdAsync(
+        public async Task<(Guid EmployeeId, Guid? OrganizationId, List<Guid> EmployeeGroupIds)?> GetEmployeeInfoByUserIdAsync(
             Guid userId,
             CancellationToken cancellationToken = default)
         {
-            var responseDto = await _httpClient.GetFromJsonAsync<EmployeeInfoResponse>(
+            var httpResponse = await _httpClient.GetAsync(
                 $"api/internal/employee-info/by-user/{userId}",
                 cancellationToken);
 
-            if (responseDto is null) return null;
+            // Wenn der Statuscode 404 ist, gib einfach null zurück. Das ist kein Fehler.
+            if (httpResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
 
-            return (responseDto.EmployeeId, responseDto.OrganizationId, responseDto.EmployeeGroupIds);
+            // Wirf nur bei anderen Fehlern eine Exception.
+            httpResponse.EnsureSuccessStatusCode();
+
+            var responseDto = await httpResponse.Content.ReadFromJsonAsync<EmployeeInfoResponse>(cancellationToken);
+
+            return (responseDto!.EmployeeId, responseDto.OrganizationId, responseDto.EmployeeGroupIds);
         }
     }
 }

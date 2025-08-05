@@ -17,9 +17,9 @@ namespace Session.Infrastructure.Persistence.Configurations
 
             builder.HasKey(s => s.Id);
 
-            builder.HasIndex(s => s.RefreshTokenHash).IsUnique();
+            builder.HasIndex(s => s.VerifierHash).IsUnique();
 
-            builder.Property(s => s.RefreshTokenHash)
+            builder.Property(s => s.VerifierHash)
                 .IsRequired();
         }
     }

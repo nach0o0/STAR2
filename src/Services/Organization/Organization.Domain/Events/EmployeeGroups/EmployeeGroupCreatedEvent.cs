@@ -8,5 +8,8 @@ using System.Threading.Tasks;
 
 namespace Organization.Domain.Events.EmployeeGroups
 {
-    public record EmployeeGroupCreatedEvent(EmployeeGroup EmployeeGroup) : INotification;
+    public record EmployeeGroupCreatedEvent(
+        EmployeeGroup EmployeeGroup,
+        Guid CreatorUserId
+    ) : INotification;
 }

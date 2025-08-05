@@ -8,8 +8,8 @@ namespace Shared.Application.Security
 {
     public record CurrentUser(
         Guid UserId,
-        Guid EmployeeId,
-        Guid OrganizationId,
+        Guid? EmployeeId,
+        Guid? OrganizationId,
         IReadOnlyList<Guid> EmployeeGroupIds,
         IReadOnlyDictionary<string, List<string>> PermissionsByScope
     );

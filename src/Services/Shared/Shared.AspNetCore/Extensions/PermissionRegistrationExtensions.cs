@@ -10,7 +10,7 @@ namespace Shared.AspNetCore.Extensions
         public static async Task RegisterServicePermissionsAsync(
             this IApplicationBuilder app,
             string serviceName,
-            IEnumerable<(string Id, string Description)> permissions)
+            IEnumerable<(string Id, string Description, List<string> PermittedScopeTypes)> permissions)
         {
             using var scope = app.ApplicationServices.CreateScope();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<object>>();

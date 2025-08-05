@@ -10,12 +10,23 @@ namespace Session.Infrastructure.Services
 {
     public class RefreshTokenGenerator : IRefreshTokenGenerator
     {
-        public string GenerateRefreshToken()
+        public (string Selector, string Verifier) Generate()
         {
-            var randomNumber = new byte[64];
+            var selectorBytes = new byte[16];
+            var verifierBytes = new byte[32];
+
             using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
+            rng.GetBytes(selectorBytes);
+            rng.GetBytes(verifierBytes);
+
+            // Verwende eine URL-sichere Base64-Kodierung
+            var selector = Convert.ToBase64String(selectorBytes)
+                .TrimEnd('=').Replace('+', '-').Replace('/', '_');
+
+            var verifier = Convert.ToBase64String(verifierBytes)
+                .TrimEnd('=').Replace('+', '-').Replace('/', '_');
+
+            return (selector, verifier);
         }
     }
 }

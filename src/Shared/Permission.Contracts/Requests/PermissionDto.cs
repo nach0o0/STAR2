@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Permission.Contracts.Requests
 {
-    public record PermissionDto(string Id, string Description);
+    public record PermissionDto(string Id, string Description, List<string> PermittedScopeTypes);
 }

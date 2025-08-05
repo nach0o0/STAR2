@@ -8,6 +8,6 @@ namespace Session.Application.Interfaces.Infrastructure
 {
     public interface IRefreshTokenGenerator
     {
-        string GenerateRefreshToken();
+        (string Selector, string Verifier) Generate();
     }
 }

@@ -9,8 +9,9 @@ namespace Session.Application.Interfaces.Persistence
 {
     public interface IActiveSessionRepository
     {
-        Task<ActiveSession?> GetByRefreshTokenHashAsync(string refreshTokenHash, CancellationToken cancellationToken = default);
-
+        Task<ActiveSession?> GetBySelectorAsync(string selector, CancellationToken cancellationToken = default);
         Task AddAsync(ActiveSession session, CancellationToken cancellationToken = default);
+        void Delete(ActiveSession session);
+        Task<List<ActiveSession>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
     }
 }

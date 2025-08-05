@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Organization.Application.Features.Commands.UpdateMyEmployeeProfile
 {
-    public class UpdateMyProfileCommandValidator : AbstractValidator<UpdateMyEmployeeProfileCommand>
+    public class UpdateMyEmployeeProfileCommandValidator : AbstractValidator<UpdateMyEmployeeProfileCommand>
     {
-        public UpdateMyProfileCommandValidator()
+        public UpdateMyEmployeeProfileCommandValidator()
         {
             // Stellt sicher, dass mindestens ein Feld zum Aktualisieren angegeben wird.
             RuleFor(x => x)

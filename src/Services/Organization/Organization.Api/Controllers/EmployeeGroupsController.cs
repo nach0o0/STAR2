@@ -14,7 +14,7 @@ using Organization.Domain.Authorization;
 namespace Organization.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/employee-groups")]
     [Authorize]
     public class EmployeeGroupsController : ControllerBase
     {

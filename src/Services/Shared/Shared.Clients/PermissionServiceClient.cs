@@ -20,13 +20,15 @@ namespace Shared.Clients
         }
 
         public async Task RegisterPermissionsAsync(
-            IEnumerable<(string Id, string Description)> permissions,
+            IEnumerable<(string Id, string Description, List<string> PermittedScopeTypes)> permissions,
             CancellationToken cancellationToken = default)
         {
-            var permissionDtos = permissions.Select(p => new PermissionDto(p.Id, p.Description)).ToList();
+            var permissionDtos = permissions
+                .Select(p => new PermissionDto(p.Id, p.Description, p.PermittedScopeTypes))
+                .ToList();
             var request = new RegisterPermissionsRequest(permissionDtos);
 
-            var response = await _httpClient.PostAsJsonAsync("api/permissions/register", request, cancellationToken);
+            var response = await _httpClient.PostAsJsonAsync("api/internal/permissions/register", request, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
 

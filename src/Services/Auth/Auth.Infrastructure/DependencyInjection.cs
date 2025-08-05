@@ -1,5 +1,5 @@
 ﻿using Auth.Application.Interfaces.Infrastructure;
-using Auth.Application.Interfaces.Persistence;
+using Shared.Application.Interfaces.Persistence;
 using Auth.Infrastructure.Persistence.Repositories;
 using Auth.Infrastructure.Persistence;
 using Auth.Infrastructure.Services;
@@ -11,6 +11,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MassTransit;
+using Shared.Application.Interfaces.Security;
+using Microsoft.Extensions.Options;
+using Shared.Options;
+using Auth.Infrastructure.Security;
+using Auth.Application.Interfaces.Persistence;
 
 namespace Auth.Infrastructure
 {
@@ -27,7 +33,25 @@ namespace Auth.Infrastructure
             // Repositories und andere Infrastructure-Services registrieren
             services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<AuthDbContext>());
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserContext, UserContext>();
             services.AddSingleton<IBasicTokenService, JwtTokenGenerator>();
+
+            services.AddMassTransit(busConfigurator =>
+            {
+                busConfigurator.UsingRabbitMq((context, cfg) =>
+                {
+                    // Hole die stark typisierten Optionen aus dem DI-Container
+                    var options = context.GetRequiredService<IOptions<MessageBrokerOptions>>().Value;
+
+                    cfg.Host(options.Host, "/", h =>
+                    {
+                        h.Username(options.Username);
+                        h.Password(options.Password);
+                    });
+
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
 
             return services;
         }

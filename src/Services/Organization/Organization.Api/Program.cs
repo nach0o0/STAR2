@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using Organization.Application;
 using Organization.Domain.Authorization;
 using Organization.Infrastructure;
@@ -8,16 +10,19 @@ using Shared.Application;
 using Shared.Application.Behaviors;
 using Shared.AspNetCore;
 using Shared.AspNetCore.Extensions;
+using Shared.AspNetCore.Middleware;
 using Shared.Clients;
 using Shared.Infrastructure;
 using Shared.Options;
 using Shared.Security;
 using Shared.Security.Authorization;
 using Shared.Security.Extensions;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // --- DI Konfiguration ---
+builder.Services.AddHttpContextAccessor();
 builder.Services
     .AddApplicationServices()
     .AddInfrastructureServices(builder.Configuration)
@@ -26,12 +31,35 @@ builder.Services
     .AddSharedInfrastructureServices()
     .AddSharedClients(builder.Configuration);
 
-// TODO: Authentifizierung (JWT Bearer) hinzufügen
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()!;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = jwtOptions.Issuer,
+        ValidateAudience = true,
+        ValidAudience = jwtOptions.Audience,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
+    };
+});
 
-var allPermissions = OrganizationPermissions.AllPermissions;
-    //.Concat(EmployeePermissions.AllPermissions)
-    //.Concat(EmployeeGroupPermissions.AllPermissions);
+var allPermissions = OrganizationPermissions.AllPermissions
+    .Concat(EmployeeGroupPermissions.AllPermissions)
+    .Concat(EmployeePermissions.AllPermissions)
+    .Concat(HourlyRatePermissions.AllPermissions)
+    .Concat(InvitationPermissions.AllPermissions);
 
 // Registriert alle Policies aus allen Listen.
 builder.Services.AddPermissionsAuthorization(allPermissions);
@@ -52,6 +80,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<GatewayIpCheckMiddleware>();
 app.UseGlobalExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();

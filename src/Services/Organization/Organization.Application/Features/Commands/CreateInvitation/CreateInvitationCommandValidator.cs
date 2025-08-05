@@ -11,7 +11,10 @@ namespace Organization.Application.Features.Commands.CreateInvitation
     {
         public CreateInvitationCommandValidator()
         {
-            RuleFor(x => x.InviteeEmployeeId).NotEmpty();
+            RuleFor(x => x.InviteeEmail)
+                .NotEmpty()
+                .EmailAddress();
+
             RuleFor(x => x.TargetEntityType).IsInEnum();
             RuleFor(x => x.TargetEntityId).NotEmpty();
         }

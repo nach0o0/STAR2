@@ -3,12 +3,7 @@ using MediatR;
 using Organization.Application.Features.Commands.RemoveEmployeeFromGroup;
 using Organization.Application.Interfaces.Persistence;
 using Organization.Domain.Events.Employees;
-using Shared.Messages.Events.OrganizationService.Employees;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.Messages.Events.OrganizationService;
 
 namespace Organization.Application.Features.DomainEventHandlers.Employees
 {
@@ -51,11 +46,11 @@ namespace Organization.Application.Features.DomainEventHandlers.Employees
             }
 
             // Veröffentliche das Integration Event.
-            var integrationEvent = new EmployeeUnassignedFromOrganizationIntegrationEvent
+            var integrationEvent = new EmployeeOrganizationAssignmentChangedIntegrationEvent
             {
+                UserId = employee.UserId.Value,
                 EmployeeId = employee.Id,
-                OrganizationId = previousOrganizationId,
-                UserId = employee.UserId.Value
+                OrganizationId = null
             };
             await _publishEndpoint.Publish(integrationEvent, cancellationToken);
         }

@@ -32,9 +32,9 @@ namespace Auth.Api.Controllers
         public async Task<IActionResult> Login(LoginRequest request)
         {
             var query = new LoginQuery(request.Email, request.Password);
-            var token = await _sender.Send(query);
+            var result = await _sender.Send(query);
 
-            var response = new LoginResponse(token);
+            var response = new LoginResponse(result.BasicToken);
             return Ok(response);
         }
     }

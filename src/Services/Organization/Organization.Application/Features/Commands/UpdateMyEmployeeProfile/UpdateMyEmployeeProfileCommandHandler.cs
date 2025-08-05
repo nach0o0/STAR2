@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Organization.Application.Features.Commands.UpdateMyEmployeeProfile
 {
-    public class UpdateMyProfileCommandHandler : IRequestHandler<UpdateMyEmployeeProfileCommand>
+    public class UpdateMyEmployeeProfileCommandHandler : IRequestHandler<UpdateMyEmployeeProfileCommand>
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IUserContext _userContext;
 
-        public UpdateMyProfileCommandHandler(IEmployeeRepository employeeRepository, IUserContext userContext)
+        public UpdateMyEmployeeProfileCommandHandler(IEmployeeRepository employeeRepository, IUserContext userContext)
         {
             _employeeRepository = employeeRepository;
             _userContext = userContext;
@@ -25,7 +25,12 @@ namespace Organization.Application.Features.Commands.UpdateMyEmployeeProfile
         {
             var currentUser = _userContext.GetCurrentUser()!;
 
-            var employee = await _employeeRepository.GetByIdAsync(currentUser.EmployeeId, cancellationToken);
+            if (!currentUser.EmployeeId.HasValue)
+            {
+                throw new ForbiddenAccessException("User does not have an employee profile to update.");
+            }
+
+            var employee = await _employeeRepository.GetByIdAsync(currentUser.EmployeeId.Value, cancellationToken);
             if (employee is null)
             {
                 throw new NotFoundException("Employee", currentUser.EmployeeId);

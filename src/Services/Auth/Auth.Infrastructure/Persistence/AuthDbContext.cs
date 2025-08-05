@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Auth.Application.Interfaces.Persistence;
+using Shared.Application.Interfaces.Persistence;
 
 namespace Auth.Infrastructure.Persistence
 {

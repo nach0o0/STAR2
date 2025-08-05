@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Shared.Application.Interfaces.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ using System.Threading.Tasks;
 namespace Permission.Application.Features.Commands.RegisterPermissions
 {
     public record RegisterPermissionsCommand(
-        IEnumerable<(string Id, string Description)> Permissions
-    ) : IRequest;
+        IEnumerable<(string Id, string Description, List<string> PermittedScopeTypes)> Permissions
+    ) : ICommand;
 }

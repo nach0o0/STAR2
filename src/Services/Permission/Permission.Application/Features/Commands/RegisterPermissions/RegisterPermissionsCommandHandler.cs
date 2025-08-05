@@ -21,7 +21,7 @@ namespace Permission.Application.Features.Commands.RegisterPermissions
         {
             // Wandelt die Tupel-Liste in eine Liste von Permission-Entitäten um.
             var permissions = command.Permissions
-                .Select(p => new Domain.Entities.Permission(p.Id, p.Description))
+                .Select(p => new Domain.Entities.Permission(p.Id, p.Description, p.PermittedScopeTypes))
                 .ToList();
 
             // Verwendet das Repository, um die neuen Berechtigungen idempotent hinzuzufügen.

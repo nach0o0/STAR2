@@ -29,6 +29,11 @@ namespace Shared.Clients
                 client.BaseAddress = new Uri(configuration["ApiClients:PermissionServiceUrl"]!);
             });
 
+            services.AddHttpClient<IAuthServiceClient, AuthServiceClient>(client =>
+            {
+                client.BaseAddress = new Uri(configuration["ApiClients:AuthServiceUrl"]!);
+            });
+
             return services;
         }
     }

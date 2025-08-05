@@ -14,6 +14,10 @@ namespace Permission.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("Permissions");
             builder.HasKey(p => p.Id);
+
+            builder.HasMany(p => p.PermittedScopeTypes)
+                .WithOne()
+                .HasForeignKey(l => l.PermissionId);
         }
     }
 }

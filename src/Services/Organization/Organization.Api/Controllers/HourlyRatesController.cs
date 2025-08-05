@@ -12,7 +12,7 @@ using Organization.Domain.Authorization;
 namespace Organization.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/houlry-rates")]
     [Authorize]
     public class HourlyRatesController : ControllerBase
     {

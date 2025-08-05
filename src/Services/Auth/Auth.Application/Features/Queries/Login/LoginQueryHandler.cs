@@ -7,7 +7,7 @@ using Shared.Domain.Exceptions;
 
 namespace Auth.Application.Features.Queries.Login
 {
-    public class LoginQueryHandler : IRequestHandler<LoginQuery, string>
+    public class LoginQueryHandler : IRequestHandler<LoginQuery, LoginQueryResult>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
@@ -20,7 +20,7 @@ namespace Auth.Application.Features.Queries.Login
             _tokenService = tokenService;
         }
 
-        public async Task<string> Handle(LoginQuery query, CancellationToken cancellationToken)
+        public async Task<LoginQueryResult> Handle(LoginQuery query, CancellationToken cancellationToken)
         {
             // 1. User finden
             var user = await _userRepository.GetByEmailAsync(query.Email, cancellationToken);
@@ -39,7 +39,7 @@ namespace Auth.Application.Features.Queries.Login
             // 3. Basis-Token generieren und zurückgeben
             var token = _tokenService.GenerateToken(user);
 
-            return token;
+            return new LoginQueryResult(token);
         }
     }
 }

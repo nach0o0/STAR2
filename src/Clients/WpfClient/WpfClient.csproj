@@ -8,4 +8,22 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.0" />
+    <PackageReference Include="WPF-UI" Version="4.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Auth.Contracts\Auth.Contracts.csproj" />
+    <ProjectReference Include="..\..\Shared\Organization.Contracts\Organization.Contracts.csproj" />
+    <ProjectReference Include="..\..\Shared\Permission.Contracts\Permission.Contracts.csproj" />
+    <ProjectReference Include="..\..\Shared\Session.Contracts\Session.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Application\OrganizationManagement\" />
+  </ItemGroup>
+
 </Project>

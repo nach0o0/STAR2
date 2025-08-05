@@ -1,16 +1,11 @@
-﻿using Auth.Application.Interfaces.Persistence;
-using MediatR;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Permission.Domain.Entities;
 using Permission.Domain.ValueObjects;
+using Shared.Application.Interfaces.Persistence;
 using Shared.Domain.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Permission.Infrastructure.Persistence
 {
@@ -26,8 +21,9 @@ namespace Permission.Infrastructure.Persistence
 
         public DbSet<Domain.Entities.Permission> Permissions { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<RoleToPermissionLink> RolePermissions { get; set; }
         public DbSet<UserPermissionAssignment> UserPermissionAssignments { get; set; }
+        public DbSet<PermissionToScopeTypeLink> PermissionScopeTypeLinks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -2,12 +2,7 @@
 using MediatR;
 using Organization.Application.Interfaces.Persistence;
 using Organization.Domain.Events.Employees;
-using Shared.Messages.Events.OrganizationService.Employees;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.Messages.Events.OrganizationService;
 
 namespace Organization.Application.Features.DomainEventHandlers.Employees
 {
@@ -24,16 +19,15 @@ namespace Organization.Application.Features.DomainEventHandlers.Employees
 
         public async Task Handle(EmployeeAssignedToGroupEvent notification, CancellationToken cancellationToken)
         {
-            var employee = await _employeeRepository.GetByIdAsync(notification.EmployeeId, cancellationToken);
-            if (employee?.UserId is null) return;
+            var employee = await _employeeRepository.GetByIdWithGroupsAsync(notification.EmployeeId, cancellationToken);
+            if (employee is null || !employee.UserId.HasValue) return;
 
-            var integrationEvent = new EmployeeAssignedToGroupIntegrationEvent
+            var integrationEvent = new EmployeeEmployeeGroupAssignmentChangedIntegrationEvent
             {
-                EmployeeId = notification.EmployeeId,
-                EmployeeGroupId = notification.EmployeeGroupId,
-                UserId = employee.UserId.Value
+                UserId = employee.UserId.Value,
+                EmployeeId = employee.Id,
+                EmployeeGroupIds = employee.EmployeeGroupLinks.Select(l => l.EmployeeGroupId).ToList()
             };
-
             await _publishEndpoint.Publish(integrationEvent, cancellationToken);
         }
     }

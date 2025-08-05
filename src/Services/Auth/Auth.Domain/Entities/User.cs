@@ -1,9 +1,5 @@
-﻿using Shared.Domain.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Auth.Domain.Events.Users;
+using Shared.Domain.Abstractions;
 
 namespace Auth.Domain.Entities
 {
@@ -40,6 +36,12 @@ namespace Auth.Domain.Entities
         {
             PasswordHash = newPasswordHash;
             UpdatedAt = DateTime.UtcNow;
+            AddDomainEvent(new UserPasswordChangedEvent(Id));
+        }
+
+        public void PrepareForDeletion()
+        {
+            AddDomainEvent(new UserAccountDeletedEvent(Id));
         }
     }
 }

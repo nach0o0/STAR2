@@ -5,6 +5,7 @@ using Organization.Application.Features.Commands.AssignHourlyRateToEmployee;
 using Organization.Application.Features.Commands.CreateMyEmployeeProfile;
 using Organization.Application.Features.Commands.RemoveEmployeeFromOrganization;
 using Organization.Application.Features.Commands.UpdateMyEmployeeProfile;
+using Organization.Application.Features.Queries.GetMyEmployeeProfile;
 using Organization.Contracts.Requests;
 using Organization.Contracts.Responses;
 using Organization.Domain.Authorization;
@@ -21,6 +22,21 @@ namespace Organization.Api.Controllers
         public EmployeesController(ISender sender)
         {
             _sender = sender;
+        }
+
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            var query = new GetMyEmployeeProfileQuery();
+            var result = await _sender.Send(query);
+
+            if (result is null)
+            {
+                return NotFound();
+            }
+
+            var response = new MyEmployeeProfileResponse(result.EmployeeId, result.FirstName, result.LastName);
+            return Ok(response);
         }
 
         [HttpPost("me")]

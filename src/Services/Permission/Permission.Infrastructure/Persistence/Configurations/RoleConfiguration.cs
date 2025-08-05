@@ -15,6 +15,11 @@ namespace Permission.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("Roles");
             builder.HasKey(r => r.Id);
+
+            builder.HasMany(r => r.Permissions)
+                .WithOne()
+                .HasForeignKey(rp => rp.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

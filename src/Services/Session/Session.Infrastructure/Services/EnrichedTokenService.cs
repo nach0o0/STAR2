@@ -18,22 +18,27 @@ namespace Session.Infrastructure.Services
         private readonly JwtOptions _jwtOptions;
         private readonly IOrganizationServiceClient _orgServiceClient;
         private readonly IPermissionQueryClient _permissionServiceClient;
+        private readonly IAuthServiceClient _authServiceClient;
 
         public EnrichedTokenService(
             IOptions<JwtOptions> jwtOptions,
             IOrganizationServiceClient orgServiceClient,
-            IPermissionQueryClient permissionServiceClient)
+            IPermissionQueryClient permissionServiceClient,
+            IAuthServiceClient authServiceClient)
         {
             _jwtOptions = jwtOptions.Value;
             _orgServiceClient = orgServiceClient;
             _permissionServiceClient = permissionServiceClient;
+            _authServiceClient = authServiceClient;
         }
 
+        // Methode für den initialen Login (nimmt das Basis-Token)
         public async Task<string> GenerateEnrichedAccessTokenAsync(string basicToken, CancellationToken cancellationToken = default)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret));
 
+            // Validiere das Basis-Token, um die UserId sicher zu extrahieren.
             var principal = tokenHandler.ValidateToken(basicToken, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -46,17 +51,44 @@ namespace Session.Infrastructure.Services
                 ClockSkew = TimeSpan.Zero
             }, out _);
 
-            var claims = principal.Claims.ToList();
-            var userId = Guid.Parse(claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value);
+            var userId = Guid.Parse(principal.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
+            // Rufe die zentrale Methode mit der extrahierten UserId auf.
+            return await GenerateEnrichedAccessTokenAsync(userId, cancellationToken);
+        }
+
+        // Zentrale Methode für die Anreicherung (nimmt die UserId)
+        public async Task<string> GenerateEnrichedAccessTokenAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            var user = await _authServiceClient.GetUserByIdAsync(userId, cancellationToken);
+            if (user is null)
+            {
+                throw new InvalidOperationException($"User with ID {userId} not found.");
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret));
+
+            // 1. Erstelle die Basis-Claims für das neue Token.
+            var claims = new List<Claim>
+            {
+                new(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new(JwtRegisteredClaimNames.Email, user.Value.Email),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            // 2. Anreicherung mit Organisations-Daten
             var employeeInfo = await _orgServiceClient.GetEmployeeInfoByUserIdAsync(userId, cancellationToken);
             var scopes = new List<string>();
 
             if (employeeInfo is not null)
             {
                 claims.Add(new Claim(CustomClaimTypes.EmployeeId, employeeInfo.Value.EmployeeId.ToString()));
-                claims.Add(new Claim(CustomClaimTypes.OrganizationId, employeeInfo.Value.OrganizationId.ToString()));
-                scopes.Add($"{PermittedScopeTypes.Organization}:{employeeInfo.Value.OrganizationId}");
+                if (employeeInfo.Value.OrganizationId.HasValue)
+                {
+                    claims.Add(new Claim(CustomClaimTypes.OrganizationId, employeeInfo.Value.OrganizationId.Value.ToString()));
+                    scopes.Add($"{PermittedScopeTypes.Organization}:{employeeInfo.Value.OrganizationId.Value}");
+                }
 
                 foreach (var groupId in employeeInfo.Value.EmployeeGroupIds)
                 {
@@ -65,17 +97,16 @@ namespace Session.Infrastructure.Services
                 }
             }
 
-            scopes.Add(PermittedScopeTypes.Global);
-            if (scopes.Any())
+            // 3. Anreicherung mit Berechtigungs-Daten
+            scopes.Add(PermittedScopeTypes.Global); // Füge immer den globalen Scope hinzu.
+            var permissionsByScope = await _permissionServiceClient.GetPermissionsForUserAsync(userId, scopes, cancellationToken);
+            if (permissionsByScope is not null && permissionsByScope.Any())
             {
-                var permissionsByScope = await _permissionServiceClient.GetPermissionsForUserAsync(userId, scopes, cancellationToken);
-                if (permissionsByScope is not null && permissionsByScope.Any())
-                {
-                    var permissionsJson = JsonSerializer.Serialize(permissionsByScope);
-                    claims.Add(new Claim(CustomClaimTypes.PermissionsByScope, permissionsJson, JsonClaimValueTypes.Json));
-                }
+                var permissionsJson = JsonSerializer.Serialize(permissionsByScope);
+                claims.Add(new Claim(CustomClaimTypes.PermissionsByScope, permissionsJson, JsonClaimValueTypes.Json));
             }
 
+            // 4. Finales Token erstellen
             var enrichedToken = new JwtSecurityToken(
                 issuer: _jwtOptions.Issuer,
                 audience: _jwtOptions.Audience,

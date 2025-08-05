@@ -7,6 +7,5 @@ using System.Threading.Tasks;
 
 namespace Organization.Application.Features.Queries.GetEmployeeInfoByUserId
 {
-    public record GetEmployeeInfoByUserIdQuery(Guid UserId)
-        : IRequest<(Guid EmployeeId, Guid OrganizationId, List<Guid> EmployeeGroupIds)?>;
+    public record GetEmployeeInfoByUserIdQuery(Guid UserId) : IRequest<GetEmployeeInfoByUserIdQueryResult?>;
 }

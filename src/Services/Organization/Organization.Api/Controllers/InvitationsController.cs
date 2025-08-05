@@ -28,7 +28,7 @@ namespace Organization.Api.Controllers
         public async Task<IActionResult> Create(CreateInvitationRequest request)
         {
             var command = new CreateInvitationCommand(
-                request.InviteeEmployeeId,
+                request.InviteeEmail,
                 request.TargetEntityType,
                 request.TargetEntityId);
 

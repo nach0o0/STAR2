@@ -18,15 +18,27 @@ namespace Session.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<ActiveSession?> GetByRefreshTokenHashAsync(string refreshTokenHash, CancellationToken cancellationToken = default)
+        public async Task<ActiveSession?> GetBySelectorAsync(string selector, CancellationToken cancellationToken = default)
         {
             return await _dbContext.ActiveSessions
-                .FirstOrDefaultAsync(s => s.RefreshTokenHash == refreshTokenHash, cancellationToken);
+                .FirstOrDefaultAsync(s => s.Selector == selector, cancellationToken);
         }
 
         public async Task AddAsync(ActiveSession session, CancellationToken cancellationToken = default)
         {
             await _dbContext.ActiveSessions.AddAsync(session, cancellationToken);
+        }
+
+        public void Delete(ActiveSession session)
+        {
+            _dbContext.ActiveSessions.Remove(session);
+        }
+
+        public async Task<List<ActiveSession>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.ActiveSessions
+                .Where(s => s.UserId == userId)
+                .ToListAsync(cancellationToken);
         }
     }
 }

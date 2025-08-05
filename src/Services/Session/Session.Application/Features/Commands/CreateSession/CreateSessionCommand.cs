@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using MediatR;
+using Shared.Application.Interfaces.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,5 @@ namespace Session.Application.Features.Commands.CreateSession
     public record CreateSessionCommand(
         string BasicToken,
         string ClientInfo
-    ) : IRequest<(string AccessToken, string RefreshToken)>;
+    ) : ICommand<(string AccessToken, string RefreshToken)>;
 }

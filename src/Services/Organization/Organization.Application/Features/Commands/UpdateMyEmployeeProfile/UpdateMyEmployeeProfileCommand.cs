@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Shared.Application.Interfaces.Messaging;
 using Shared.Application.Interfaces.Security;
 using Shared.Application.Security;
 using Shared.Domain.Exceptions;
@@ -13,5 +14,5 @@ namespace Organization.Application.Features.Commands.UpdateMyEmployeeProfile
     public record UpdateMyEmployeeProfileCommand(
         string? FirstName,
         string? LastName
-    ) : IRequest;
+    ) : ICommand;
 }

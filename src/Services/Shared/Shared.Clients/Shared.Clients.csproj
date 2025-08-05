@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Auth.Contracts\Auth.Contracts.csproj" />
     <ProjectReference Include="..\..\..\Shared\Organization.Contracts\Organization.Contracts.csproj" />
     <ProjectReference Include="..\..\..\Shared\Permission.Contracts\Permission.Contracts.csproj" />
     <ProjectReference Include="..\Shared.Application\Shared.Application.csproj" />

@@ -8,6 +8,7 @@ namespace Permission.Application.Interfaces.Persistence
 {
     public interface IPermissionRepository
     {
+        Task<Domain.Entities.Permission?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
         Task AddRangeAsync(IEnumerable<Domain.Entities.Permission> permissions, CancellationToken cancellationToken = default);
     }
 }

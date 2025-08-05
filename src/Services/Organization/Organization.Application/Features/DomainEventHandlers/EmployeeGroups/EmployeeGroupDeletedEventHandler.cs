@@ -1,13 +1,9 @@
 ﻿using MassTransit;
 using MediatR;
+using Organization.Application.Features.Commands.RemoveEmployeeFromGroup;
 using Organization.Application.Interfaces.Persistence;
 using Organization.Domain.Events.EmployeeGroups;
-using Shared.Messages.Events.OrganizationService.EmployeeGroups;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.Messages.Events.OrganizationService;
 
 namespace Organization.Application.Features.DomainEventHandlers.EmployeeGroups
 {
@@ -15,11 +11,16 @@ namespace Organization.Application.Features.DomainEventHandlers.EmployeeGroups
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly ISender _sender;
 
-        public EmployeeGroupDeletedEventHandler(IEmployeeRepository employeeRepository, IPublishEndpoint publishEndpoint)
+        public EmployeeGroupDeletedEventHandler(
+            IEmployeeRepository employeeRepository,
+            IPublishEndpoint publishEndpoint,
+            ISender sender)
         {
             _employeeRepository = employeeRepository;
             _publishEndpoint = publishEndpoint;
+            _sender = sender;
         }
 
         public async Task Handle(EmployeeGroupDeletedEvent notification, CancellationToken cancellationToken)
@@ -32,7 +33,7 @@ namespace Organization.Application.Features.DomainEventHandlers.EmployeeGroups
             // 2. Entferne die Zuweisung bei jedem Mitarbeiter.
             foreach (var member in members)
             {
-                member.RemoveFromGroup(deletedGroup.Id, null);
+                await _sender.Send(new RemoveEmployeeFromGroupCommand(member.Id, deletedGroup.Id), cancellationToken);
             }
 
             // 3. Veröffentliche das Integration Event.

@@ -1,0 +1,83 @@
+﻿Ich verwende eine Windows VM, auf dem alle Microservices laufen sollen. Darauf installiert ist RabbitMQ, PostgreSQL und die kompilierten Programme der Microservices. Ich möchte ein Skript oder eine Anwendung haben, die die nötigen Datenbanken anlegt, die Microservices startet, Migrationen ausführt, einen Admin-Benutzer registriert (Anmeldedaten erstmal in der gleichen Datei/Projekt) und ihm die Rolle zuweist. Fehlt noch irgendwas? Wie setze ich das am besten um?
+
+
+Ja, deine Liste ist fast vollständig. Der beste Weg, dies umzusetzen, ist eine Kombination aus einem PowerShell-Skript für die Orchestrierung und einer kleinen .NET-Konsolenanwendung für die Logik, die nicht einfach über die Kommandozeile erledigt werden kann.
+
+## Fehlende Schritte
+Firewall-Regeln: Du musst sicherstellen, dass die Ports für deine Services, PostgreSQL (5432) und RabbitMQ (5672, 15672) in der Windows-Firewall geöffnet sind.
+
+Konfiguration: Das Skript muss die appsettings.json-Dateien deiner Services mit den korrekten Verbindungsstrings und URLs befüllen.
+
+## Umsetzung: Skript & Konsolen-App
+Hier ist die empfohlene Struktur und Vorgehensweise:
+
+1. Die Ordnerstruktur
+Lege einen neuen Ordner Setup im Hauptverzeichnis deines Projekts an:
+
+/Setup/
+├── setup.ps1                 <-- Das Haupt-Skript
+├── Setup.Console/            <-- Das .NET-Projekt
+│   ├── Setup.Console.csproj
+│   ├── Program.cs
+│   └── appsettings.json      <-- Konfiguration für den Admin-User
+└── ...
+2. Die .NET-Konsolenanwendung (Setup.Console)
+Diese Anwendung hat eine einzige Aufgabe: den ersten Admin-Benutzer anzulegen.
+
+Referenzen: Sie benötigt Referenzen auf Auth.Contracts und Permission.Contracts.
+
+appsettings.json: Enthält die Anmeldedaten für den initialen Admin und die URLs deiner Services.
+
+Program.cs:
+
+Liest die Konfiguration.
+
+Erstellt einen HttpClient.
+
+Ruft den POST /api/authentication/register-Endpunkt im AuthService auf, um den Benutzer zu registrieren.
+
+Loggt sich mit dem neuen Benutzer ein, um ein Token zu erhalten.
+
+Ruft den POST /api/permissions/assignments/roles-Endpunkt im PermissionService auf, um dem neuen Benutzer die "System-Admin"-Rolle im "global"-Scope zuzuweisen.
+
+3. Das PowerShell-Skript (setup.ps1)
+Dies ist dein zentrales Orchestrierungs-Skript. Es führt alle Schritte in der richtigen Reihenfolge aus.
+
+PowerShell
+
+# setup.ps1
+
+# --- Konfiguration ---
+$dbUser = "postgres"
+$dbPassword = "your_secure_password"
+$solutionPath = "C:\Pfad\zu\deiner\Solution"
+
+# --- Schritt 1: Datenbanken erstellen ---
+Write-Host "Datenbanken werden erstellt..."
+psql -U $dbUser -c "CREATE DATABASE auth_db;"
+psql -U $dbUser -c "CREATE DATABASE session_db;"
+psql -U $dbUser -c "CREATE DATABASE organization_db;"
+psql -U $dbUser -c "CREATE DATABASE permission_db;"
+
+# --- Schritt 2: Microservices starten ---
+Write-Host "Microservices werden gestartet..."
+Start-Process -FilePath "$solutionPath\src\Services\Auth\Auth.Api\bin\Release\net8.0\Auth.Api.exe"
+Start-Process -FilePath "$solutionPath\src\Services\Session\Session.Api\bin\Release\net8.0\Session.Api.exe"
+# ... für alle anderen Services ...
+Start-Sleep -Seconds 10 # Gib den Services Zeit zum Starten
+
+# --- Schritt 3: Migrationen ausführen ---
+Write-Host "Datenbank-Migrationen werden ausgeführt..."
+cd "$solutionPath\src\Services\Auth\Auth.Infrastructure"
+dotnet ef database update
+cd "$solutionPath\src\Services\Session\Session.Infrastructure"
+dotnet ef database update
+# ... für alle anderen Services ...
+
+# --- Schritt 4: Initialen Admin-Benutzer erstellen ---
+Write-Host "Initialer Admin-Benutzer wird erstellt..."
+cd "$solutionPath\Setup\Setup.Console"
+dotnet run
+
+Write-Host "Setup abgeschlossen!"
+Dieses Setup ist robust, wiederholbar und trennt die Orchestrierung (PowerShell) sauber von der Anwendungslogik (C#-Konsolen-App).

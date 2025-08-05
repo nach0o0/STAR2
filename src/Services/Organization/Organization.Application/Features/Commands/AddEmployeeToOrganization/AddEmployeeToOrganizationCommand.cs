@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Shared.Application.Interfaces.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,5 @@ namespace Organization.Application.Features.Commands.AddEmployeeToOrganization
     public record AddEmployeeToOrganizationCommand(
         Guid EmployeeId,
         Guid OrganizationId
-    ) : IRequest;
+    ) : ICommand;
 }

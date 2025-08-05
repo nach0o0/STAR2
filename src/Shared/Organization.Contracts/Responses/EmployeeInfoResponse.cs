@@ -8,7 +8,7 @@ namespace Organization.Contracts.Responses
 {
     public record EmployeeInfoResponse(
         Guid EmployeeId,
-        Guid OrganizationId,
+        Guid? OrganizationId,
         List<Guid> EmployeeGroupIds
     );
 }

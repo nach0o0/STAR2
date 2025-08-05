@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Shared.Application.Interfaces.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,5 @@ namespace Organization.Application.Features.Commands.UpdateHourlyRate
         DateTime? ValidFrom,
         DateTime? ValidTo,
         string? Description
-    ) : IRequest;
+    ) : ICommand;
 }

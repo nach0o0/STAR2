@@ -62,5 +62,11 @@ namespace Organization.Infrastructure.Persistence.Repositories
         {
             await _dbContext.Employees.AddAsync(employee, cancellationToken);
         }
+
+        public async Task<Employee?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Employees
+                .FirstOrDefaultAsync(e => e.UserId == userId, cancellationToken);
+        }
     }
 }

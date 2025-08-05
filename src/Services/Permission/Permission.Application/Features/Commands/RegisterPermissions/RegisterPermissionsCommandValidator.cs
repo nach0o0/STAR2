@@ -17,6 +17,7 @@ namespace Permission.Application.Features.Commands.RegisterPermissions
             {
                 permission.RuleFor(p => p.Id).NotEmpty();
                 permission.RuleFor(p => p.Description).NotEmpty();
+                permission.RuleFor(p => p.PermittedScopeTypes).NotEmpty();
             });
         }
     }

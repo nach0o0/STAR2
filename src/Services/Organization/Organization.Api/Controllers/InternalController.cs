@@ -20,18 +20,17 @@ namespace Organization.Api.Controllers
         public async Task<IActionResult> GetEmployeeInfoByUserId(Guid userId)
         {
             var query = new GetEmployeeInfoByUserIdQuery(userId);
+            var queryResult = await _sender.Send(query);
 
-            var resultTuple = await _sender.Send(query);
-
-            if (resultTuple is null)
+            if (queryResult is null)
             {
                 return NotFound();
             }
 
             var response = new EmployeeInfoResponse(
-                resultTuple.Value.EmployeeId,
-                resultTuple.Value.OrganizationId,
-                resultTuple.Value.EmployeeGroupIds);
+                queryResult.EmployeeId,
+                queryResult.OrganizationId,
+                queryResult.EmployeeGroupIds);
 
             return Ok(response);
         }

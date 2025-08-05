@@ -9,5 +9,6 @@ namespace Session.Application.Interfaces.Infrastructure
     public interface IEnrichedTokenService
     {
         Task<string> GenerateEnrichedAccessTokenAsync(string basicToken, CancellationToken cancellationToken = default);
+        Task<string> GenerateEnrichedAccessTokenAsync(Guid userId, CancellationToken cancellationToken = default);
     }
 }

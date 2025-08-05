@@ -109,7 +109,20 @@ namespace Permission.Infrastructure.Migrations
                     b.ToTable("UserPermissionAssignments", (string)null);
                 });
 
-            modelBuilder.Entity("Permission.Domain.ValueObjects.RolePermission", b =>
+            modelBuilder.Entity("Permission.Domain.ValueObjects.PermissionToScopeTypeLink", b =>
+                {
+                    b.Property<string>("PermissionId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScopeType")
+                        .HasColumnType("text");
+
+                    b.HasKey("PermissionId", "ScopeType");
+
+                    b.ToTable("Permission_PermittedScopeTypes", (string)null);
+                });
+
+            modelBuilder.Entity("Permission.Domain.ValueObjects.RoleToPermissionLink", b =>
                 {
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
@@ -119,7 +132,35 @@ namespace Permission.Infrastructure.Migrations
 
                     b.HasKey("RoleId", "PermissionId");
 
-                    b.ToTable("RolePermissions", (string)null);
+                    b.ToTable("Role_Permissions", (string)null);
+                });
+
+            modelBuilder.Entity("Permission.Domain.ValueObjects.PermissionToScopeTypeLink", b =>
+                {
+                    b.HasOne("Permission.Domain.Entities.Permission", null)
+                        .WithMany("PermittedScopeTypes")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Permission.Domain.ValueObjects.RoleToPermissionLink", b =>
+                {
+                    b.HasOne("Permission.Domain.Entities.Role", null)
+                        .WithMany("Permissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Permission.Domain.Entities.Permission", b =>
+                {
+                    b.Navigation("PermittedScopeTypes");
+                });
+
+            modelBuilder.Entity("Permission.Domain.Entities.Role", b =>
+                {
+                    b.Navigation("Permissions");
                 });
 #pragma warning restore 612, 618
         }

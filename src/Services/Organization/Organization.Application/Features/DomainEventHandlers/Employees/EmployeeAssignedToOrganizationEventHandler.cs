@@ -3,12 +3,7 @@ using MediatR;
 using Organization.Application.Features.Commands.AddEmployeeToGroup;
 using Organization.Application.Interfaces.Persistence;
 using Organization.Domain.Events.Employees;
-using Shared.Messages.Events.OrganizationService.Employees;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.Messages.Events.OrganizationService;
 
 namespace Organization.Application.Features.DomainEventHandlers.Employees
 {
@@ -53,11 +48,11 @@ namespace Organization.Application.Features.DomainEventHandlers.Employees
             // 3. Veröffentliche das Integration Event, um über die Zuweisung zur Organisation zu informieren.
             if (employee.UserId.HasValue)
             {
-                var integrationEvent = new EmployeeAssignedToOrganizationIntegrationEvent
+                var integrationEvent = new EmployeeOrganizationAssignmentChangedIntegrationEvent
                 {
+                    UserId = employee.UserId.Value,
                     EmployeeId = notification.EmployeeId,
-                    OrganizationId = notification.OrganizationId,
-                    UserId = employee.UserId.Value
+                    OrganizationId = notification.OrganizationId
                 };
                 await _publishEndpoint.Publish(integrationEvent, cancellationToken);
             }

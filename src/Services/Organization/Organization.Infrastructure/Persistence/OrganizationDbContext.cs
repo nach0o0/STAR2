@@ -1,15 +1,11 @@
-﻿using Auth.Application.Interfaces.Persistence;
-using MediatR;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
 using Organization.Domain.Entities;
+using Shared.Application.Interfaces.Persistence;
 using Shared.Domain.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Organization.Infrastructure.Persistence
 {
@@ -21,6 +17,7 @@ namespace Organization.Infrastructure.Persistence
             : base(options)
         {
             _publisher = publisher;
+
         }
 
         public DbSet<Domain.Entities.Organization> Organizations { get; set; }

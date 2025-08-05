@@ -32,5 +32,10 @@ namespace Auth.Infrastructure.Persistence.Repositories
         {
             await _dbContext.Users.AddAsync(user, cancellationToken);
         }
+
+        public void Delete(User user)
+        {
+            _dbContext.Users.Remove(user);
+        }
     }
 }

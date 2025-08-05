@@ -41,7 +41,7 @@ namespace Session.Infrastructure.Migrations
                     b.Property<DateTime?>("LastUsedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("RefreshTokenHash")
+                    b.Property<string>("Selector")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -51,9 +51,13 @@ namespace Session.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("VerifierHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("RefreshTokenHash")
+                    b.HasIndex("VerifierHash")
                         .IsUnique();
 
                     b.ToTable("ActiveSessions", (string)null);

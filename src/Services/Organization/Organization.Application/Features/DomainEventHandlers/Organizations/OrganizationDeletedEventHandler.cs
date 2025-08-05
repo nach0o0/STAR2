@@ -7,7 +7,7 @@ using Organization.Application.Features.Commands.RemoveEmployeeFromOrganization;
 using Organization.Application.Features.Commands.RevokeInvitation;
 using Organization.Application.Interfaces.Persistence;
 using Organization.Domain.Events.Organizations;
-using Shared.Messages.Events.OrganizationService.Organizations;
+using Shared.Messages.Events.OrganizationService;
 
 namespace Organization.Application.Features.DomainEventHandlers.Organizations
 {

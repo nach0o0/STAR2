@@ -11,7 +11,9 @@ namespace Session.Domain.Entities
     {
         public Guid UserId { get; private set; }
 
-        public string RefreshTokenHash { get; private set; }
+        public string Selector { get; private set; }
+
+        public string VerifierHash { get; private set; }
 
         public DateTime ExpiresAt { get; private set; }
 
@@ -23,16 +25,26 @@ namespace Session.Domain.Entities
 
         private ActiveSession() { }
 
-        public ActiveSession(Guid userId, string refreshTokenHash, int lifetimeInDays, string clientInfo)
+        public ActiveSession(Guid userId, string selector, string verifierHash, int lifetimeInDays, string clientInfo)
         {
             Id = Guid.NewGuid();
             UserId = userId;
-            RefreshTokenHash = refreshTokenHash;
+            Selector = selector;
+            VerifierHash = verifierHash;
             ExpiresAt = DateTime.UtcNow.AddDays(lifetimeInDays);
             ClientInfo = clientInfo;
             CreatedAt = DateTime.UtcNow;
         }
 
+        public void RotateRefreshToken(string newSelector, string newVerifierHash, int lifetimeInDays)
+        {
+            Selector = newSelector;
+            VerifierHash = newVerifierHash;
+            ExpiresAt = DateTime.UtcNow.AddDays(lifetimeInDays);
+            LastUsedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
+        
         public void MarkAsUsed()
         {
             LastUsedAt = DateTime.UtcNow;

@@ -1,9 +1,4 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shared.Application.Interfaces.Messaging;
 
 namespace Organization.Application.Features.Commands.CreateHourlyRate
 {
@@ -14,5 +9,5 @@ namespace Organization.Application.Features.Commands.CreateHourlyRate
         Guid OrganizationId,
         DateTime? ValidTo,
         string? Description
-    ) : IRequest<Guid>;
+    ) : ICommand<Guid>;
 }

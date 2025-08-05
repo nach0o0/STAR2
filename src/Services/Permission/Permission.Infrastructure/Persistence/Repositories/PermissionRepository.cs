@@ -17,6 +17,11 @@ namespace Permission.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<Domain.Entities.Permission?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Permissions.FindAsync(new object[] { id }, cancellationToken);
+        }
+
         public async Task AddRangeAsync(IEnumerable<Domain.Entities.Permission> permissions, CancellationToken cancellationToken = default)
         {
             // Fügt nur Berechtigungen hinzu, die noch nicht existieren.

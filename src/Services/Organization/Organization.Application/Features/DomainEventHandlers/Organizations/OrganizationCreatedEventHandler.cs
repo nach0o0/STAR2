@@ -1,16 +1,9 @@
 ﻿using MassTransit;
 using MediatR;
 using Organization.Application.Features.Commands.CreateEmployeeGroup;
-using Organization.Application.Interfaces.Persistence;
-using Organization.Domain.Entities;
 using Organization.Domain.Events.Organizations;
 using Shared.Application.Interfaces.Security;
-using Shared.Messages.Events.OrganizationService.Organizations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.Messages.Events.OrganizationService;
 
 namespace Organization.Application.Features.DomainEventHandlers.Organizations
 {
@@ -33,7 +26,7 @@ namespace Organization.Application.Features.DomainEventHandlers.Organizations
             var currentUser = _userContext.GetCurrentUser()!;
 
             // 1. Erstelle die zugehörige DefaultEmployeeGroup.
-            var defaultGroupName = $"Default group: {organization.Name}";
+            var defaultGroupName = $"{organization.Name} - default group";
             var createGroupCommand = new CreateEmployeeGroupCommand(defaultGroupName, organization.Id);
             var defaultGroupId = await _sender.Send(createGroupCommand, cancellationToken);
 

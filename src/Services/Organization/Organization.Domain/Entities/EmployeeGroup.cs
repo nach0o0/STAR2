@@ -15,13 +15,13 @@ namespace Organization.Domain.Entities
 
         private EmployeeGroup() { }
 
-        public EmployeeGroup(string name, Guid leadingOrganizationId)
+        public EmployeeGroup(string name, Guid leadingOrganizationId, Guid creatorUserId)
         {
             Id = Guid.NewGuid();
             Name = name;
             LeadingOrganizationId = leadingOrganizationId;
             CreatedAt = DateTime.UtcNow;
-            AddDomainEvent(new EmployeeGroupCreatedEvent(this));
+            AddDomainEvent(new EmployeeGroupCreatedEvent(this, creatorUserId));
         }
 
         public void UpdateName(string newName)
