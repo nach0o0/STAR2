@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WpfClient.Models;
-using WpfClient.Services.Api.OrganizationApi;
+using WpfClient.Services.Api.Interfaces;
 using WpfClient.Services.Application.Auth;
 
 namespace WpfClient.Services.Application.MyEmployeeProfile

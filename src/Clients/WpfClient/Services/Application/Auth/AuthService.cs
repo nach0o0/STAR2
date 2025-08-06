@@ -10,8 +10,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using WpfClient.Models;
 using WpfClient.Security;
-using WpfClient.Services.Api.AuthApi;
-using WpfClient.Services.Api.SessionApi;
+using WpfClient.Services.Api.Interfaces;
 using WpfClient.Services.Application.MyEmployeeProfile;
 using WpfClient.Services.Application.Navigation;
 

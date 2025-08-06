@@ -1,0 +1,41 @@
+﻿using Permission.Contracts.Requests;
+using Refit;
+using Permission.Contracts.Responses;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WpfClient.Services.Api.PermissionApi
+{
+    public interface IPermissionApiClient
+    {
+        [Post("/api/roles")]
+        Task<CreateRoleResponse> CreateRoleAsync([Body] CreateRoleRequest request);
+
+        [Put("/api/roles/{roleId}")]
+        Task UpdateRoleAsync(Guid roleId, [Body] UpdateRoleRequest request);
+
+        [Delete("/api/roles/{roleId}")]
+        Task DeleteRoleAsync(Guid roleId);
+
+        [Post("/api/roles/{roleId}/permissions")]
+        Task AddPermissionToRoleAsync(Guid roleId, [Body] AddPermissionToRoleRequest request);
+
+        [Delete("/api/roles/{roleId}/permissions/{permissionId}")]
+        Task RemovePermissionFromRoleAsync(Guid roleId, string permissionId);
+
+        [Post("/api/user-permissions/roles")]
+        Task<AssignRoleToUserResponse> AssignRoleToUserAsync([Body] AssignRoleToUserRequest request);
+
+        [Delete("/api/user-permissions/roles")]
+        Task RemoveRoleFromUserAsync([Body] RemoveRoleFromUserRequest request);
+
+        [Post("/api/user-permissions/direct")]
+        Task<AssignDirectPermissionToUserResponse> AssignDirectPermissionToUserAsync([Body] AssignDirectPermissionToUserRequest request);
+
+        [Delete("/api/user-permissions/direct")]
+        Task RemoveDirectPermissionFromUserAsync([Body] RemoveDirectPermissionFromUserRequest request);
+    }
+}

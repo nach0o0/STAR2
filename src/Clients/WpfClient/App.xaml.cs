@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
+using Refit;
 using System.Configuration;
 using System.Data;
 using System.Net.Http;
 using System.Windows;
 using WpfClient.Services.Api;
 using WpfClient.Services.Api.AuthApi;
+using WpfClient.Services.Api.Interfaces;
 using WpfClient.Services.Api.OrganizationApi;
 using WpfClient.Services.Api.PermissionApi;
 using WpfClient.Services.Api.SessionApi;
@@ -56,37 +58,22 @@ namespace WpfClient
             services.AddSingleton<IAccessTokenProvider, AccessTokenProvider>();
             services.AddTransient<AuthDelegatingHandler>();
 
-            // Erstelle einen Handler, der Weiterleitungen erlaubt.
-            //var handler = new HttpClientHandler
-            //{
-            //    AllowAutoRedirect = true
-            //};
-
             // API Clients
-            services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
-            {
-                client.BaseAddress = new Uri("http://localhost:5058");
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("MyWpfClient/1.0");
-            })
-            .AddHttpMessageHandler<AuthDelegatingHandler>();
-            services.AddHttpClient<ISessionApiClient, SessionApiClient>(client =>
-            {
-                client.BaseAddress = new Uri("http://localhost:5058");
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("MyWpfClient/1.0");
-            })
-            .AddHttpMessageHandler<AuthDelegatingHandler>();
-            services.AddHttpClient<IPermissionApiClient, PermissionApiClient>(client =>
-            {
-                client.BaseAddress = new Uri("http://localhost:5058");
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("MyWpfClient/1.0");
-            })
-            .AddHttpMessageHandler<AuthDelegatingHandler>();
-            services.AddHttpClient<IOrganizationApiClient, OrganizationApiClient>(client =>
-            {
-                client.BaseAddress = new Uri("http://localhost:5058");
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("MyWpfClient/1.0");
-            })
-            .AddHttpMessageHandler<AuthDelegatingHandler>();
+            services.AddRefitClient<IAuthApiClient>()
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("http://localhost:5058"))
+                .AddHttpMessageHandler<AuthDelegatingHandler>();
+
+            services.AddRefitClient<ISessionApiClient>()
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("http://localhost:5058"))
+                .AddHttpMessageHandler<AuthDelegatingHandler>();
+
+            services.AddRefitClient<IPermissionApiClient>()
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("http://localhost:5058"))
+                .AddHttpMessageHandler<AuthDelegatingHandler>();
+
+            services.AddRefitClient<IOrganizationApiClient>()
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("http://localhost:5058"))
+                .AddHttpMessageHandler<AuthDelegatingHandler>();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
