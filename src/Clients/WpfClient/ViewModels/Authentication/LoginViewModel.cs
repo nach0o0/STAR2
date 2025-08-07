@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Refit;
 using System.Net;
+using WpfClient.Messages;
 using WpfClient.Services.Application.Auth;
 using WpfClient.Services.Application.Navigation;
 using WpfClient.Services.Application.Notification;
@@ -9,9 +11,10 @@ using WpfClient.ViewModels.Base;
 
 namespace WpfClient.ViewModels.Authentication
 {
-    public partial class LoginViewModel : AuthViewModelBase
+    public partial class LoginViewModel : AuthViewModelBase, IRecipient<StatusUpdateMessage>
     {
         private readonly IAuthService _authService;
+        private readonly IMessenger _messenger;
 
         [ObservableProperty]
         private string? _infoMessage;
@@ -19,26 +22,28 @@ namespace WpfClient.ViewModels.Authentication
         public LoginViewModel(
             IAuthService authService, 
             INavigationService navigationService, 
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IMessenger messenger)
             : base(navigationService)
         {
             _authService = authService;
+            _messenger = messenger;
+            _messenger.Register<StatusUpdateMessage>(this);
 
             InfoMessage = notificationService.PopMessage();
         }
 
         protected override async Task ExecuteSubmitAsync()
         {
-            try
+            await _authService.LoginAsync(Email, Password);
+        }
+
+        public void Receive(StatusUpdateMessage message)
+        {
+            if (message.MessageType == StatusMessageType.Error)
             {
-                await _authService.LoginAsync(Email, Password);
+                ErrorMessage = message.Message;
             }
-            catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                // We handle the specific 404 error here to provide a better message.
-                ErrorMessage = "Invalid email or password.";
-            }
-            // All other exceptions will be caught by the ExecuteCommandAsync in ViewModelBase.
         }
 
         [RelayCommand]

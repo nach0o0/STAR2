@@ -13,7 +13,7 @@ using WpfClient.ViewModels.Base;
 
 namespace WpfClient.ViewModels.User
 {
-    public partial class ProfileViewModel : ViewModelBase
+    public partial class ProfileViewModel : ViewModelBase, IRecipient<StatusUpdateMessage>
     {
         public ProfileInfoViewModel ProfileInfoViewModel { get; }
         public ChangePasswordViewModel ChangePasswordViewModel { get; }
@@ -32,7 +32,7 @@ namespace WpfClient.ViewModels.User
             ActiveSessionsViewModel = activeSessionsViewModel;
             DeleteAccountViewModel = deleteAccountViewModel;
 
-            messenger.RegisterAll(this);
+            messenger.Register<StatusUpdateMessage>(this);
         }
 
         public void Receive(StatusUpdateMessage message)

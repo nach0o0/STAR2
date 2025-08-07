@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
 using System.Collections.Generic;
@@ -6,12 +8,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using WpfClient.Messages;
 using WpfClient.Models;
 
 namespace WpfClient.ViewModels.Base
 {
     public abstract partial class ViewModelBase : ObservableObject
     {
+        protected readonly IMessenger Messenger;
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasErrorMessage))]
         private string? _errorMessage;
@@ -24,10 +30,16 @@ namespace WpfClient.ViewModels.Base
 
         public bool HasErrorMessage => !string.IsNullOrEmpty(ErrorMessage);
 
+        protected ViewModelBase() 
+        {
+            Messenger = App.Services.GetRequiredService<IMessenger>();
+        }
+
         protected async Task ExecuteCommandAsync(Func<Task> action)
         {
             IsLoading = true;
             ErrorMessage = null;
+            SuccessMessage = null;
             try
             {
                 await action();
@@ -35,22 +47,20 @@ namespace WpfClient.ViewModels.Base
             catch (ApiException ex)
             {
                 var validationErrors = await ex.GetContentAsAsync<ValidationProblemDetails>();
-                if (validationErrors?.Errors != null && validationErrors.Errors.Any())
-                {
-                    ErrorMessage = validationErrors.Errors.First().Value.First();
-                }
-                else
-                {
-                    ErrorMessage = $"An API error occurred: {ex.StatusCode}";
-                }
+                var message = (validationErrors?.Errors != null && validationErrors.Errors.Any())
+                    ? validationErrors.Errors.First().Value.First()
+                    : $"An API error occurred: {ex.StatusCode}";
+
+                // Sende eine Fehlermeldung über den Messenger
+                Messenger.Send(new StatusUpdateMessage(message, StatusMessageType.Error));
             }
             catch (HttpRequestException)
             {
-                ErrorMessage = "Could not connect to the server.";
+                Messenger.Send(new StatusUpdateMessage("Could not connect to the server.", StatusMessageType.Error));
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"An unexpected error occurred: {ex.Message}";
+                Messenger.Send(new StatusUpdateMessage($"An unexpected error occurred: {ex.Message}", StatusMessageType.Error));
             }
             finally
             {

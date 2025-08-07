@@ -49,8 +49,8 @@ namespace WpfClient.ViewModels.User
                 {
                     throw new System.InvalidOperationException("The new passwords do not match.");
                 }
-                _notificationService.SetMessage("Password changed successfully. Please log in again.");
                 await _authService.ChangePasswordAsync(OldPassword, NewPassword);
+                _notificationService.SetMessage("Password changed successfully. Please log in again.");
                 await _authService.LogoutAsync();
             });
         }

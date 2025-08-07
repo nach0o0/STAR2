@@ -14,14 +14,14 @@ namespace WpfClient.Services.Application.MyEmployeeProfile
     public partial class MyEmployeeProfileService : IMyEmployeeProfileService
     {
         private readonly IOrganizationApiClient _organizationApiClient;
-        private readonly IUserStateService _userStateService;
+        private readonly IAuthService _authService;
 
         public MyEmployeeProfileService(
             IOrganizationApiClient organizationApiClient,
-            IUserStateService userStateService)
+            IAuthService authService)
         {
             _organizationApiClient = organizationApiClient;
-            _userStateService = userStateService;
+            _authService = authService;
         }
 
         public async Task CreateMyProfileAsync(string firstName, string lastName)
@@ -29,8 +29,10 @@ namespace WpfClient.Services.Application.MyEmployeeProfile
             // 1. Aktion ausführen
             await _organizationApiClient.CreateMyEmployeeProfileAsync(new(firstName, lastName));
 
-            // 2. Zentralen Zustand aktualisieren lassen
-            await _userStateService.RefreshProfileAsync();
+            // 2. Eine komplett neue Session anfordern. 
+            //    Dies holt ein neues Access Token, das jetzt den employee_id-Claim enthält,
+            //    und löst über den Messenger ein Update im UserStateService aus.
+            await _authService.TryInitializeSessionAsync();
         }
 
         public async Task UpdateMyProfileAsync(string firstName, string lastName)
@@ -38,8 +40,9 @@ namespace WpfClient.Services.Application.MyEmployeeProfile
             // 1. Aktion ausführen
             await _organizationApiClient.UpdateMyEmployeeProfileAsync(new(firstName, lastName));
 
-            // 2. Zentralen Zustand aktualisieren lassen
-            await _userStateService.RefreshProfileAsync();
+            // Beim Update ist keine neue Session nötig, nur ein Refresh der lokalen Daten.
+            // TryInitializeSessionAsync würde auch hier funktionieren, ist aber nicht zwingend.
+            await _authService.TryInitializeSessionAsync();
         }
     }
 }

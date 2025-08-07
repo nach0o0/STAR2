@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System.Net.Http;
 using System.Windows;
+using WpfClient.Services.Api.Extensions;
 using WpfClient.Services.Api.Handlers;
 using WpfClient.Services.Api.Interfaces;
 using WpfClient.Services.Application.Auth;
@@ -20,6 +21,8 @@ namespace WpfClient
 {
     public partial class App : Application
     {
+        public static IServiceProvider Services { get; private set; }
+
         private readonly IServiceProvider _serviceProvider;
 
         public App()
@@ -27,6 +30,7 @@ namespace WpfClient
             var services = new ServiceCollection();
             ConfigureServices(services);
             _serviceProvider = services.BuildServiceProvider();
+            Services = _serviceProvider;
         }
 
         private void ConfigureServices(IServiceCollection services)
@@ -71,36 +75,20 @@ namespace WpfClient
 
             // Refit API Clients
             string baseAddress = "http://localhost:5058"; // API Gateway URL
-            Action<HttpClient> configureClient = client =>
-            {
-                client.BaseAddress = new Uri(baseAddress);
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("STAR-WpfClient");
-            };
-
-            services.AddRefitClient<IAuthApiClient>()
-                .ConfigureHttpClient(configureClient)
-                .AddHttpMessageHandler<AuthDelegatingHandler>();
-
-            services.AddRefitClient<ISessionApiClient>()
-                .ConfigureHttpClient(configureClient)
-                .AddHttpMessageHandler<AuthDelegatingHandler>();
-
-            services.AddRefitClient<IPermissionApiClient>()
-                .ConfigureHttpClient(configureClient)
-                .AddHttpMessageHandler<AuthDelegatingHandler>();
-
-            services.AddRefitClient<IOrganizationApiClient>()
-                .ConfigureHttpClient(configureClient)
-                .AddHttpMessageHandler<AuthDelegatingHandler>();
+            services.AddStarApiClient<IAuthApiClient>(baseAddress);
+            services.AddStarApiClient<ISessionApiClient>(baseAddress);
+            services.AddStarApiClient<IPermissionApiClient>(baseAddress);
+            services.AddStarApiClient<IOrganizationApiClient>(baseAddress);
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+            mainWindow.DataContext = _serviceProvider.GetRequiredService<MainViewModel>();
+
             var authService = _serviceProvider.GetRequiredService<IAuthService>();
             await authService.TryInitializeSessionAsync();
 
-            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            mainWindow.DataContext = _serviceProvider.GetRequiredService<MainViewModel>();
             mainWindow.Show();
 
             base.OnStartup(e);

@@ -13,6 +13,9 @@ using WpfClient.Services.Application.UserState;
 using WpfClient.ViewModels.Base;
 using CommunityToolkit.Mvvm.Messaging;
 using WpfClient.Messages;
+using WpfClient.Services.Application.Navigation;
+using WpfClient.Services.Application.Notification;
+using WpfClient.ViewModels.Shell;
 
 namespace WpfClient.ViewModels.User
 {
@@ -21,6 +24,7 @@ namespace WpfClient.ViewModels.User
         private readonly IMyEmployeeProfileService _myProfileService;
         private readonly IUserStateService _userStateService;
         private readonly IMessenger _messenger;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private MyEmployeeProfileModel _profile;
@@ -31,11 +35,13 @@ namespace WpfClient.ViewModels.User
         public ProfileInfoViewModel(
             IMyEmployeeProfileService myProfileService,
             IUserStateService userStateService,
-            IMessenger messenger)
+            IMessenger messenger,
+            INavigationService navigationService)
         {
             _myProfileService = myProfileService;
             _userStateService = userStateService;
             _messenger = messenger;
+            _navigationService = navigationService;
 
             _profile = _userStateService.Profile ?? new MyEmployeeProfileModel();
             _userStateService.PropertyChanged += UserStateService_PropertyChanged;
@@ -57,7 +63,6 @@ namespace WpfClient.ViewModels.User
             await ExecuteCommandAsync(async () =>
             {
                 await _myProfileService.CreateMyProfileAsync(Profile.FirstName, Profile.LastName);
-                _messenger.Send(new StatusUpdateMessage("Profile created successfully.", StatusMessageType.Success));
             });
         }
 

@@ -33,8 +33,15 @@ namespace WpfClient.Services.Application.UserState
 
         public async void Receive(UserLoggedInMessage message)
         {
-            CurrentUser = message.User;
-            await RefreshProfileAsync();
+            try
+            {
+                CurrentUser = message.User;
+                await RefreshProfileAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while processing login: {ex.Message}");
+            }
         }
 
         public void Receive(UserLoggedOutMessage message)
