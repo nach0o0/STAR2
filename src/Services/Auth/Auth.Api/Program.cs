@@ -69,6 +69,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+await app.RegisterServicePermissionsAsync("Auth", allPermissions);
+
 // --- 2. HTTP Request Pipeline Konfiguration ---
 // Aktiviere Swagger UI nur in der Entwicklungsumgebung
 if (app.Environment.IsDevelopment())

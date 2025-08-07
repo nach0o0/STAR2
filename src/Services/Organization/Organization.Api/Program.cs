@@ -73,6 +73,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+await app.RegisterServicePermissionsAsync("Organization", allPermissions);
+
 // --- HTTP Request Pipeline ---
 if (app.Environment.IsDevelopment())
 {

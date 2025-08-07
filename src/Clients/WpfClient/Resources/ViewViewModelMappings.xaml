@@ -5,11 +5,15 @@
                     xmlns:shellViews="clr-namespace:WpfClient.Views.Shell"
                     xmlns:authViews="clr-namespace:WpfClient.Views.Authentication"
                     xmlns:userViews="clr-namespace:WpfClient.Views.User"
+                    xmlns:orgViews="clr-namespace:WpfClient.Views.Organization"
+                    xmlns:adminViews="clr-namespace:WpfClient.Views.Admin"
                     
                     xmlns:viewModels="clr-namespace:WpfClient.ViewModels"
                     xmlns:shellVM="clr-namespace:WpfClient.ViewModels.Shell"
                     xmlns:authVM="clr-namespace:WpfClient.ViewModels.Authentication"
-                    xmlns:userVM="clr-namespace:WpfClient.ViewModels.User">
+                    xmlns:userVM="clr-namespace:WpfClient.ViewModels.User"
+                    xmlns:orgVM="clr-namespace:WpfClient.ViewModels.Organization"
+                    xmlns:adminVM="clr-namespace:WpfClient.ViewModels.Admin">
 
     <DataTemplate DataType="{x:Type shellVM:DashboardViewModel}">
         <shellViews:DashboardView/>
@@ -40,8 +44,21 @@
         <userViews:DeleteAccountView/>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type adminVM:SystemAdminViewModel}">
+        <adminViews:SystemAdminView/>
+    </DataTemplate>
+    
+    
+
     <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
         <views:HomeView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type orgVM:OrganizationWorkspaceViewModel}">
+        <orgViews:OrganizationWorkspaceView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type orgVM:CreateOrganizationViewModel}">
+        <orgViews:CreateOrganizationView/>
     </DataTemplate>
 
 </ResourceDictionary>

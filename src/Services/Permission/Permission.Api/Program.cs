@@ -8,6 +8,7 @@ using Shared.Application;
 using Shared.AspNetCore;
 using Shared.AspNetCore.Extensions;
 using Shared.AspNetCore.Middleware;
+using Shared.Clients;
 using Shared.Infrastructure;
 using Shared.Options;
 using Shared.Security.Extensions;
@@ -22,7 +23,8 @@ builder.Services
     .AddInfrastructureServices(builder.Configuration)
     .AddSharedApplicationServices()
     .AddSharedAspNetCoreServices()
-    .AddSharedInfrastructureServices();
+    .AddSharedInfrastructureServices()
+    .AddSharedClients(builder.Configuration);
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 
@@ -63,7 +65,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-await app.EnsureSeedData();
+var appLifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+
+// Registriere einen Callback, der ausgeführt wird, NACHDEM die Anwendung gestartet ist.
+appLifetime.ApplicationStarted.Register(async () => {
+    await app.RegisterServicePermissionsAsync("Permission", allPermissions);
+    await app.EnsureSeedData();
+});
 
 // --- HTTP Request Pipeline ---
 if (app.Environment.IsDevelopment())

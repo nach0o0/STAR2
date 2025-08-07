@@ -5,6 +5,7 @@ using Organization.Application.Features.Commands.CreateOrganization;
 using Organization.Application.Features.Commands.DeleteOrganization;
 using Organization.Application.Features.Commands.ReassignOrganizationParent;
 using Organization.Application.Features.Commands.UpdateOrganization;
+using Organization.Application.Features.Queries.GetEmployeesByOrganization;
 using Organization.Contracts.Requests;
 using Organization.Contracts.Responses;
 using Organization.Domain.Authorization;
@@ -70,6 +71,23 @@ namespace Organization.Api.Controllers
             var command = new ReassignOrganizationToParentCommand(organizationId, request.NewParentId);
             await _sender.Send(command);
             return NoContent();
+        }
+
+        [HttpGet("{organizationId:guid}/employees")]
+        public async Task<IActionResult> GetEmployees(Guid organizationId)
+        {
+            var query = new GetEmployeesByOrganizationQuery(organizationId);
+            var result = await _sender.Send(query);
+
+            var response = result.Select(e => new EmployeeResponse(
+                e.Id,
+                e.FirstName,
+                e.LastName,
+                e.UserId,
+                organizationId
+            ));
+
+            return Ok(response);
         }
     }
 }

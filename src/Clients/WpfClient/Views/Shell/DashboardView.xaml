@@ -9,6 +9,8 @@
              xmlns:shellVM="clr-namespace:WpfClient.ViewModels.Shell"
              xmlns:authVM="clr-namespace:WpfClient.ViewModels.Authentication"
              xmlns:userVM="clr-namespace:WpfClient.ViewModels.User"
+             xmlns:orgVM="clr-namespace:WpfClient.ViewModels.Organization"
+             xmlns:adminVM="clr-namespace:WpfClient.ViewModels.Admin"
              
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
@@ -52,6 +54,23 @@
                                        CommandParameter="{x:Type viewModels:PlanningViewModel}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="CalendarDataBar24"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="Organization"
+                                       Command="{Binding NavigateCommand}"
+                                       CommandParameter="{x:Type orgVM:OrganizationWorkspaceViewModel}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="BuildingMultiple24"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="System Administration"
+                                       Command="{Binding NavigateCommand}"
+                                       CommandParameter="{x:Type adminVM:SystemAdminViewModel}"
+                                       Visibility="{Binding CanAccessSystemAdministration, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Shield24"/>
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>

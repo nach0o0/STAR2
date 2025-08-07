@@ -8,7 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wpf.Ui.Controls;
+using WpfClient.Security;
 using WpfClient.Services.Application.Auth;
+using WpfClient.Services.Application.Permission;
 using WpfClient.ViewModels.Base;
 
 namespace WpfClient.ViewModels.Shell
@@ -17,15 +19,34 @@ namespace WpfClient.ViewModels.Shell
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IAuthService _authService;
+        private readonly IPermissionService _permissionService;
 
         [ObservableProperty]
         private ViewModelBase _selectedViewModel;
 
-        public DashboardViewModel(IServiceProvider serviceProvider, IAuthService authService)
+        public bool CanAccessSystemAdministration { get; }
+
+        public DashboardViewModel(IServiceProvider serviceProvider,
+                                  IAuthService authService,
+                                  IPermissionService permissionService)
         {
             _serviceProvider = serviceProvider;
             _authService = authService;
+            _permissionService = permissionService;
             _selectedViewModel = _serviceProvider.GetRequiredService<HomeViewModel>();
+
+            var adminPermissions = new[]
+                {
+                    PermissionKeys.RoleCreate,
+                    PermissionKeys.RoleUpdate,
+                    PermissionKeys.RoleDelete,
+                    PermissionKeys.RoleAssignPermission,
+                    PermissionKeys.PermissionAssignRole,
+                    PermissionKeys.PermissionAssignDirect,
+                    PermissionKeys.PrivilegedResetPassword
+                };
+            CanAccessSystemAdministration = adminPermissions.Any(permission =>
+                _permissionService.HasPermissionInScope(permission, "global"));
         }
 
         [RelayCommand]

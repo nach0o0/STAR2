@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Permission.Contracts\Permission.Contracts.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.AspNetCore\Shared.AspNetCore.csproj" />
+	  <ProjectReference Include="..\..\Shared\Shared.Clients\Shared.Clients.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Security\Shared.Security.csproj" />
     <ProjectReference Include="..\Permission.Infrastructure\Permission.Infrastructure.csproj" />
   </ItemGroup>

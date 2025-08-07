@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="WpfClient.Views.Organization.OrganizationWorkspaceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfClient.Views.Organization"
+             xmlns:converters="clr-namespace:WpfClient.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="30">
+            <TextBlock Text="Organization Management" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
+
+            <ContentControl 
+                Content="{Binding CreateOrganizationViewModel}"
+                Visibility="{Binding CanCreateOrganization, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+            <Separator Margin="0,20" 
+                       Visibility="{Binding CanCreateOrganization, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+            <GroupBox Header="Employees in my Organization" Padding="15">
+                <StackPanel>
+                    <Button Content="Load Employees" 
+                            Command="{Binding LoadEmployeesCommand}" 
+                            HorizontalAlignment="Left" 
+                            Margin="0,0,0,15"/>
+
+                    <ListView ItemsSource="{Binding Employees}" MaxHeight="400">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="First Name" DisplayMemberBinding="{Binding FirstName}" Width="200"/>
+                                <GridViewColumn Header="Last Name" DisplayMemberBinding="{Binding LastName}" Width="200"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

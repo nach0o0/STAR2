@@ -22,6 +22,17 @@ namespace Permission.Domain.Entities
 
         private Role() { }
 
+        internal Role(Guid id, string name, string description, string? scope = null)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            IsCustom = false;
+            Scope = scope;
+            BaseRoleId = null;
+            CreatedAt = DateTime.UtcNow;
+        }
+
         public Role(string name, string description)
         {
             Id = Guid.NewGuid();

@@ -23,6 +23,10 @@ namespace WpfClient.Services.Api.Interfaces
         [Patch("/api/organizations/{organizationId}/parent")]
         Task ReassignOrganizationParentAsync(Guid organizationId, [Body] ReassignOrganizationToParentRequest request);
 
+        [Get("/api/organizations/{organizationId}/employees")]
+        Task<List<EmployeeResponse>> GetEmployeesByOrganizationAsync(Guid organizationId);
+
+
         [Get("/api/employees/me")]
         Task<MyEmployeeProfileResponse?> GetMyEmployeeProfileAsync();
 
@@ -31,6 +35,7 @@ namespace WpfClient.Services.Api.Interfaces
 
         [Put("/api/employees/me")]
         Task UpdateMyEmployeeProfileAsync([Body] UpdateEmployeeRequest request);
+
 
         [Post("/api/employeegroups")]
         Task<CreateEmployeeGroupResponse> CreateEmployeeGroupAsync([Body] CreateEmployeeGroupRequest request);
@@ -44,6 +49,7 @@ namespace WpfClient.Services.Api.Interfaces
         [Patch("/api/employeegroups/{employeeGroupId}/transfer")]
         Task TransferEmployeeGroupAsync(Guid employeeGroupId, [Body] TransferEmployeeGroupRequest request);
 
+
         [Delete("/api/employees/{employeeId}/organization")]
         Task RemoveEmployeeFromOrganizationAsync(Guid employeeId);
 
@@ -56,6 +62,7 @@ namespace WpfClient.Services.Api.Interfaces
         [Put("/api/employees/{employeeId}/groups/{employeeGroupId}/hourly-rate")]
         Task AssignHourlyRateToEmployeeAsync(Guid employeeId, Guid employeeGroupId, [Body] AssignHourlyRateToEmployeeRequest request);
 
+
         [Post("/api/invitations")]
         Task<CreateInvitationResponse> CreateInvitationAsync([Body] CreateInvitationRequest request);
 
@@ -67,6 +74,7 @@ namespace WpfClient.Services.Api.Interfaces
 
         [Delete("/api/invitations/{invitationId}")]
         Task RevokeInvitationAsync(Guid invitationId);
+
 
         [Post("/api/hourlyrates")]
         Task<CreateHourlyRateResponse> CreateHourlyRateAsync([Body] CreateHourlyRateRequest request);

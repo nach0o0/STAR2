@@ -8,9 +8,13 @@ using WpfClient.Services.Application.Auth;
 using WpfClient.Services.Application.MyEmployeeProfile;
 using WpfClient.Services.Application.Navigation;
 using WpfClient.Services.Application.Notification;
+using WpfClient.Services.Application.Organization;
+using WpfClient.Services.Application.Permission;
 using WpfClient.Services.Application.UserState;
 using WpfClient.ViewModels;
+using WpfClient.ViewModels.Admin;
 using WpfClient.ViewModels.Authentication;
+using WpfClient.ViewModels.Organization;
 using WpfClient.ViewModels.Shell;
 using WpfClient.ViewModels.User;
 using WpfClient.Views.Shell;
@@ -36,19 +40,28 @@ namespace WpfClient
             // ViewModels
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<NotificationViewModel>();
+            services.AddTransient<DashboardViewModel>();
+
             services.AddTransient<LoginViewModel>();
             services.AddTransient<RegisterViewModel>();
-            services.AddTransient<DashboardViewModel>();
-            services.AddTransient<HomeViewModel>();
-            services.AddTransient<TimeTrackingViewModel>();
-            services.AddTransient<CostObjectViewModel>();
-            services.AddTransient<PlanningViewModel>();
+
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<ProfileViewModel>();
             services.AddTransient<ProfileInfoViewModel>();
             services.AddTransient<ChangePasswordViewModel>();
             services.AddTransient<ActiveSessionsViewModel>();
             services.AddTransient<DeleteAccountViewModel>();
+
+            services.AddTransient<SystemAdminViewModel>();
+
+
+            services.AddTransient<OrganizationWorkspaceViewModel>();
+            services.AddTransient<CreateOrganizationViewModel>();
+
+            services.AddTransient<HomeViewModel>();
+            services.AddTransient<TimeTrackingViewModel>();
+            services.AddTransient<CostObjectViewModel>();
+            services.AddTransient<PlanningViewModel>();
 
             // Views
             services.AddSingleton<MainWindow>();
@@ -59,6 +72,8 @@ namespace WpfClient
             services.AddSingleton<IUserStateService, UserStateService>();
 
             // Reine "Action" Services (Singleton, da sie selbst keinen Zustand halten)
+            services.AddSingleton<IPermissionService, PermissionService>();
+            services.AddSingleton<IOrganizationService, OrganizationService>();
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<IMyEmployeeProfileService, MyEmployeeProfileService>();
 

@@ -137,10 +137,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Enums", "src\Shared\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{E1A619C3-E0C1-466A-855C-F07BFC8FC0B8}"
 	ProjectSection(SolutionItems) = preProject
-		to-dos.txt = to-dos.txt
+		Setup\setup.ps1 = Setup\setup.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternalApiGateway", "src\Gateways\InternalApiGateway\InternalApiGateway.csproj", "{90C578BB-BB18-478D-B068-AC11D95FF5A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Setup.Console", "Setup\Setup.Console\Setup.Console.csproj", "{7E892D56-BA11-4EF7-9A40-D4823A868FE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -356,6 +358,10 @@ Global
 		{90C578BB-BB18-478D-B068-AC11D95FF5A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90C578BB-BB18-478D-B068-AC11D95FF5A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90C578BB-BB18-478D-B068-AC11D95FF5A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E892D56-BA11-4EF7-9A40-D4823A868FE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E892D56-BA11-4EF7-9A40-D4823A868FE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E892D56-BA11-4EF7-9A40-D4823A868FE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E892D56-BA11-4EF7-9A40-D4823A868FE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -426,6 +432,7 @@ Global
 		{4C95D0AC-9F59-45F9-B50E-82E9F62DBAEE} = {6E4CA1F1-9142-41B6-8772-066E0479B718}
 		{EC80719C-047C-47F4-B545-40922B0E3C51} = {09F6AAFB-4FAA-4A18-8681-A6DBC4E13A73}
 		{90C578BB-BB18-478D-B068-AC11D95FF5A5} = {4D0A26CC-B427-48AB-9EE8-E824B58FB40B}
+		{7E892D56-BA11-4EF7-9A40-D4823A868FE9} = {E1A619C3-E0C1-466A-855C-F07BFC8FC0B8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0261B63E-9288-4D6E-87D2-DA1B76188E7B}
