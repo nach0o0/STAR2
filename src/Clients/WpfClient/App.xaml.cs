@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
-using Refit;
-using System.Net.Http;
 using System.Windows;
 using WpfClient.Services.Api.Extensions;
 using WpfClient.Services.Api.Handlers;
@@ -9,7 +7,6 @@ using WpfClient.Services.Api.Interfaces;
 using WpfClient.Services.Application.Auth;
 using WpfClient.Services.Application.MyEmployeeProfile;
 using WpfClient.Services.Application.Navigation;
-using WpfClient.Services.Application.Notification;
 using WpfClient.Services.Application.UserState;
 using WpfClient.ViewModels;
 using WpfClient.ViewModels.Authentication;
@@ -65,7 +62,6 @@ namespace WpfClient
 
             // Hilfsdienste
             services.AddSingleton<INavigationService, NavigationService>();
-            services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
 
             // --- API Clients & Infrastruktur ---

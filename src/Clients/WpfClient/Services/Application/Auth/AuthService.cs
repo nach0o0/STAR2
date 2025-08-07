@@ -93,18 +93,28 @@ namespace WpfClient.Services.Application.Auth
         public async Task<bool> RegisterAsync(string email, string password)
         {
             var response = await _authApiClient.RegisterAsync(new(email, password));
-            return response != null;
+
+            if (response != null)
+            {
+                _messenger.Send(new StatusUpdateMessage("Registration successful! Please log in.", StatusMessageType.Success));
+                return true;
+            }
+
+            return false;
         }
 
         public async Task ChangePasswordAsync(string oldPassword, string newPassword)
         {
             await _authApiClient.ChangePasswordAsync(new(oldPassword, newPassword));
+            _messenger.Send(new StatusUpdateMessage("Password changed successfully. Please log in again.", StatusMessageType.Success));
+            await LogoutAsync();
         }
 
         public async Task DeleteMyAccountAsync(string password)
         {
             await _authApiClient.DeleteMyAccountAsync(new(password));
-            await LogoutAsync(); // Nach dem Löschen immer ausloggen
+            _messenger.Send(new StatusUpdateMessage("Your account has been successfully deleted.", StatusMessageType.Success));
+            await LogoutAsync();
         }
 
         public async Task<List<ActiveSessionModel>> GetMyActiveSessionsAsync()

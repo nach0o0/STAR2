@@ -2,13 +2,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using WpfClient.Messages;
 using WpfClient.Models;
 
@@ -53,6 +47,10 @@ namespace WpfClient.ViewModels.Base
 
                 // Sende eine Fehlermeldung über den Messenger
                 Messenger.Send(new StatusUpdateMessage(message, StatusMessageType.Error));
+            }
+            catch (InvalidOperationException ex)
+            {
+                Messenger.Send(new StatusUpdateMessage($"{ex.Message}", StatusMessageType.Error));
             }
             catch (HttpRequestException)
             {

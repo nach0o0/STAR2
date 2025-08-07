@@ -1,49 +1,43 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Refit;
-using System.Net;
 using WpfClient.Messages;
 using WpfClient.Services.Application.Auth;
 using WpfClient.Services.Application.Navigation;
-using WpfClient.Services.Application.Notification;
 using WpfClient.ViewModels.Base;
 
 namespace WpfClient.ViewModels.Authentication
 {
-    public partial class LoginViewModel : AuthViewModelBase, IRecipient<StatusUpdateMessage>
+    public partial class LoginViewModel : AuthViewModelBase
     {
         private readonly IAuthService _authService;
-        private readonly IMessenger _messenger;
 
         [ObservableProperty]
         private string? _infoMessage;
 
         public LoginViewModel(
             IAuthService authService, 
-            INavigationService navigationService, 
-            INotificationService notificationService,
-            IMessenger messenger)
+            INavigationService navigationService)
             : base(navigationService)
         {
             _authService = authService;
-            _messenger = messenger;
-            _messenger.Register<StatusUpdateMessage>(this);
+        }
 
-            InfoMessage = notificationService.PopMessage();
+        public void SetInitialMessage(StatusUpdateMessage message)
+        {
+            if (message.MessageType == StatusMessageType.Success)
+            {
+                InfoMessage = message.Message;
+            }
+            else
+            {
+                ErrorMessage = message.Message;
+            }
         }
 
         protected override async Task ExecuteSubmitAsync()
         {
             await _authService.LoginAsync(Email, Password);
-        }
-
-        public void Receive(StatusUpdateMessage message)
-        {
-            if (message.MessageType == StatusMessageType.Error)
-            {
-                ErrorMessage = message.Message;
-            }
         }
 
         [RelayCommand]

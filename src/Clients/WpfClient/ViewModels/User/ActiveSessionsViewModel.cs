@@ -16,15 +16,13 @@ namespace WpfClient.ViewModels.User
     public partial class ActiveSessionsViewModel : ViewModelBase
     {
         private readonly IAuthService _authService;
-        private readonly IMessenger _messenger;
 
         [ObservableProperty]
         private ObservableCollection<ActiveSessionModel> _activeSessions = new();
 
-        public ActiveSessionsViewModel(IAuthService authService, IMessenger messenger)
+        public ActiveSessionsViewModel(IAuthService authService)
         {
             _authService = authService;
-            _messenger = messenger;
 
             LoadSessionsCommand.Execute(null);
         }

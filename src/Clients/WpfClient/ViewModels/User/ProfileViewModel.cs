@@ -1,14 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using WpfClient.Messages;
-using WpfClient.Models;
-using WpfClient.Services.Application.Auth;
-using WpfClient.Services.Application.MyEmployeeProfile;
-using WpfClient.Services.Application.Notification;
-using WpfClient.Services.Application.UserState;
 using WpfClient.ViewModels.Base;
 
 namespace WpfClient.ViewModels.User

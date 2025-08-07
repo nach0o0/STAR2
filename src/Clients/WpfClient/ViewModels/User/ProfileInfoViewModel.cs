@@ -1,21 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
+using CommunityToolkit.Mvvm.Messaging;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using WpfClient.Messages;
 using WpfClient.Models;
 using WpfClient.Services.Application.MyEmployeeProfile;
+using WpfClient.Services.Application.Navigation;
 using WpfClient.Services.Application.UserState;
 using WpfClient.ViewModels.Base;
-using CommunityToolkit.Mvvm.Messaging;
-using WpfClient.Messages;
-using WpfClient.Services.Application.Navigation;
-using WpfClient.Services.Application.Notification;
-using WpfClient.ViewModels.Shell;
 
 namespace WpfClient.ViewModels.User
 {
