@@ -9,17 +9,14 @@ namespace WpfClient.Services.Application.Auth
 {
     public interface IAuthService
     {
-        bool IsLoggedIn { get; }
-        CurrentUser? CurrentUser { get; }
-        Task TryLoadSessionAsync();
+        Task<bool> TryInitializeSessionAsync();
         Task<bool> LoginAsync(string email, string password);
         Task LogoutAsync();
         Task<bool> RegisterAsync(string email, string password);
         Task ChangePasswordAsync(string oldPassword, string newPassword);
-        Task DeleteMyAccountAsync(string password); 
+        Task DeleteMyAccountAsync(string password);
+
         string? GetAccessToken();
-        Task<bool> RefreshTokensAsync();
-        Task InitializeAsync();
         Task<List<ActiveSessionModel>> GetMyActiveSessionsAsync();
     }
 }

@@ -9,6 +9,8 @@
                 <ui:ControlsDictionary />
 
                 <ResourceDictionary Source="/Styles/_Controls.xaml" />
+
+                <ResourceDictionary Source="/Resources/ViewViewModelMappings.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

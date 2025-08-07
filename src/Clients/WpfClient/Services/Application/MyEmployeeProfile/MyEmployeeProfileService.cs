@@ -7,58 +7,39 @@ using System.Threading.Tasks;
 using WpfClient.Models;
 using WpfClient.Services.Api.Interfaces;
 using WpfClient.Services.Application.Auth;
+using WpfClient.Services.Application.UserState;
 
 namespace WpfClient.Services.Application.MyEmployeeProfile
 {
-    public partial class MyEmployeeProfileService : ObservableObject, IMyEmployeeProfileService
+    public partial class MyEmployeeProfileService : IMyEmployeeProfileService
     {
         private readonly IOrganizationApiClient _organizationApiClient;
+        private readonly IUserStateService _userStateService;
 
-        [ObservableProperty]
-        private MyEmployeeProfileModel? _currentProfile;
-
-        public MyEmployeeProfileService(IOrganizationApiClient organizationApiClient)
+        public MyEmployeeProfileService(
+            IOrganizationApiClient organizationApiClient,
+            IUserStateService userStateService)
         {
             _organizationApiClient = organizationApiClient;
-
-            ClientAppMediator.UserLoggedIn += LoadProfileAsync;
-            ClientAppMediator.UserLoggedOut += ClearProfile;
+            _userStateService = userStateService;
         }
 
-        public async Task LoadProfileAsync()
+        public async Task CreateMyProfileAsync(string firstName, string lastName)
         {
-            var profileDto = await _organizationApiClient.GetMyEmployeeProfileAsync();
-            if (profileDto is not null)
-            {
-                CurrentProfile = new MyEmployeeProfileModel
-                {
-                    EmployeeId = profileDto.EmployeeId,
-                    FirstName = profileDto.FirstName,
-                    LastName = profileDto.LastName
-                };
-            }
-        }
+            // 1. Aktion ausführen
+            await _organizationApiClient.CreateMyEmployeeProfileAsync(new(firstName, lastName));
 
-        public async Task<Guid?> CreateMyProfileAsync(string firstName, string lastName)
-        {
-            var response = await _organizationApiClient.CreateMyEmployeeProfileAsync(new(firstName, lastName));
-            if (response is null) return null;
-
-            await ClientAppMediator.NotifyProfileCreatedAsync();
-
-            await LoadProfileAsync(); // Lade das Profil neu, um den Zustand zu aktualisieren
-            return response?.EmployeeId;
+            // 2. Zentralen Zustand aktualisieren lassen
+            await _userStateService.RefreshProfileAsync();
         }
 
         public async Task UpdateMyProfileAsync(string firstName, string lastName)
         {
+            // 1. Aktion ausführen
             await _organizationApiClient.UpdateMyEmployeeProfileAsync(new(firstName, lastName));
-            await LoadProfileAsync(); // Lade das Profil neu
-        }
 
-        public void ClearProfile()
-        {
-            CurrentProfile = null;
+            // 2. Zentralen Zustand aktualisieren lassen
+            await _userStateService.RefreshProfileAsync();
         }
     }
 }

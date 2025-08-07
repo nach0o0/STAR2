@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfClient.Services.Api.PermissionApi
+namespace WpfClient.Services.Api.Interfaces
 {
     public interface IPermissionApiClient
     {

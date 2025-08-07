@@ -8,12 +8,9 @@ using WpfClient.Models;
 
 namespace WpfClient.Services.Application.MyEmployeeProfile
 {
-    public interface IMyEmployeeProfileService : INotifyPropertyChanged
+    public interface IMyEmployeeProfileService
     {
-        MyEmployeeProfileModel? CurrentProfile { get; }
-        Task LoadProfileAsync();
-        Task<Guid?> CreateMyProfileAsync(string firstName, string lastName);
+        Task CreateMyProfileAsync(string firstName, string lastName);
         Task UpdateMyProfileAsync(string firstName, string lastName);
-        void ClearProfile();
     }
 }

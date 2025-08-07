@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\NewFolder\**" />
+    <EmbeddedResource Remove="Views\NewFolder\**" />
+    <None Remove="Views\NewFolder\**" />
+    <Page Remove="Views\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
     <PackageReference Include="Refit" Version="8.0.0" />
@@ -22,10 +29,6 @@
     <ProjectReference Include="..\..\Shared\Organization.Contracts\Organization.Contracts.csproj" />
     <ProjectReference Include="..\..\Shared\Permission.Contracts\Permission.Contracts.csproj" />
     <ProjectReference Include="..\..\Shared\Session.Contracts\Session.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Application\OrganizationManagement\" />
   </ItemGroup>
 
 </Project>

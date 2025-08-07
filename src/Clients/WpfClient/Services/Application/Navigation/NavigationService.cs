@@ -1,11 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WpfClient.ViewModels.Base;
-using WpfClient.ViewModels;
+using WpfClient.ViewModels.Shell;
 
 namespace WpfClient.Services.Application.Navigation
 {

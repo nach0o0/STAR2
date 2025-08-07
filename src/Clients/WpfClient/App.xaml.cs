@@ -1,21 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
-using System.Configuration;
-using System.Data;
 using System.Net.Http;
 using System.Windows;
-using WpfClient.Services.Api;
-using WpfClient.Services.Api.AuthApi;
+using WpfClient.Services.Api.Handlers;
 using WpfClient.Services.Api.Interfaces;
-using WpfClient.Services.Api.OrganizationApi;
-using WpfClient.Services.Api.PermissionApi;
-using WpfClient.Services.Api.SessionApi;
 using WpfClient.Services.Application.Auth;
 using WpfClient.Services.Application.MyEmployeeProfile;
 using WpfClient.Services.Application.Navigation;
 using WpfClient.Services.Application.Notification;
+using WpfClient.Services.Application.UserState;
 using WpfClient.ViewModels;
+using WpfClient.ViewModels.Authentication;
+using WpfClient.ViewModels.Shell;
+using WpfClient.ViewModels.User;
+using WpfClient.Views.Shell;
 
 namespace WpfClient
 {
@@ -43,43 +42,62 @@ namespace WpfClient
             services.AddTransient<PlanningViewModel>();
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<ProfileViewModel>();
+            services.AddTransient<ProfileInfoViewModel>();
+            services.AddTransient<ChangePasswordViewModel>();
+            services.AddTransient<ActiveSessionsViewModel>();
+            services.AddTransient<DeleteAccountViewModel>();
 
             // Views
             services.AddSingleton<MainWindow>();
 
-            // Application Services
-            services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
+            // --- Application Services ---
 
-            services.AddSingleton<INavigationService, NavigationService>();
-            services.AddSingleton<INotificationService, NotificationService>();
+            // Zentrales State Management (Singleton)
+            services.AddSingleton<IUserStateService, UserStateService>();
+
+            // Reine "Action" Services (Singleton, da sie selbst keinen Zustand halten)
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<IMyEmployeeProfileService, MyEmployeeProfileService>();
 
-            services.AddSingleton<IAccessTokenProvider, AccessTokenProvider>();
+            // Hilfsdienste
+            services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<INotificationService, NotificationService>();
+            services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
+
+            // --- API Clients & Infrastruktur ---
+
+            // HTTP Middleware für Authentifizierung
             services.AddTransient<AuthDelegatingHandler>();
 
-            // API Clients
+            // Refit API Clients
+            string baseAddress = "http://localhost:5058"; // API Gateway URL
+            Action<HttpClient> configureClient = client =>
+            {
+                client.BaseAddress = new Uri(baseAddress);
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("STAR-WpfClient");
+            };
+
             services.AddRefitClient<IAuthApiClient>()
-                .ConfigureHttpClient(client => client.BaseAddress = new Uri("http://localhost:5058"))
+                .ConfigureHttpClient(configureClient)
                 .AddHttpMessageHandler<AuthDelegatingHandler>();
 
             services.AddRefitClient<ISessionApiClient>()
-                .ConfigureHttpClient(client => client.BaseAddress = new Uri("http://localhost:5058"))
+                .ConfigureHttpClient(configureClient)
                 .AddHttpMessageHandler<AuthDelegatingHandler>();
 
             services.AddRefitClient<IPermissionApiClient>()
-                .ConfigureHttpClient(client => client.BaseAddress = new Uri("http://localhost:5058"))
+                .ConfigureHttpClient(configureClient)
                 .AddHttpMessageHandler<AuthDelegatingHandler>();
 
             services.AddRefitClient<IOrganizationApiClient>()
-                .ConfigureHttpClient(client => client.BaseAddress = new Uri("http://localhost:5058"))
+                .ConfigureHttpClient(configureClient)
                 .AddHttpMessageHandler<AuthDelegatingHandler>();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
             var authService = _serviceProvider.GetRequiredService<IAuthService>();
-            await authService.InitializeAsync();
+            await authService.TryInitializeSessionAsync();
 
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.DataContext = _serviceProvider.GetRequiredService<MainViewModel>();

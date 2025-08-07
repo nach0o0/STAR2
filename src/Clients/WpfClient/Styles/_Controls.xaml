@@ -6,6 +6,33 @@
         <ResourceDictionary Source="_Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Style x:Key="ProfileGroupBoxStyle" TargetType="GroupBox">
+        <Setter Property="Header" Value="Update Profile Information"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasProfile}" Value="False">
+                <Setter Property="Header" Value="Create Your Profile"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="UpdateProfileButtonStyle" TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+        <Setter Property="Visibility" Value="Visible"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasProfile}" Value="False">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="CreateProfileButtonStyle" TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasProfile}" Value="False">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="{x:Type ui:Button}">
         <Setter Property="Background" Value="{StaticResource HighlightBrush}" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryBackgroundBrush}" />
