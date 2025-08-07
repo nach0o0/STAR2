@@ -23,16 +23,9 @@ namespace WpfClient.ViewModels.Authentication
             _authService = authService;
         }
 
-        public void SetInitialMessage(StatusUpdateMessage message)
+        public void SetInitialMessage(LoginInfoMessage message)
         {
-            if (message.MessageType == StatusMessageType.Success)
-            {
-                InfoMessage = message.Message;
-            }
-            else
-            {
-                ErrorMessage = message.Message;
-            }
+            InfoMessage = message.Message;
         }
 
         protected override async Task ExecuteSubmitAsync()

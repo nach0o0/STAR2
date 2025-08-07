@@ -96,7 +96,7 @@ namespace WpfClient.Services.Application.Auth
 
             if (response != null)
             {
-                _messenger.Send(new StatusUpdateMessage("Registration successful! Please log in.", StatusMessageType.Success));
+                _messenger.Send(new LoginInfoMessage("Registration successful! Please log in."));
                 return true;
             }
 
@@ -106,14 +106,14 @@ namespace WpfClient.Services.Application.Auth
         public async Task ChangePasswordAsync(string oldPassword, string newPassword)
         {
             await _authApiClient.ChangePasswordAsync(new(oldPassword, newPassword));
-            _messenger.Send(new StatusUpdateMessage("Password changed successfully. Please log in again.", StatusMessageType.Success));
+            _messenger.Send(new LoginInfoMessage("Password changed successfully. Please log in again."));
             await LogoutAsync();
         }
 
         public async Task DeleteMyAccountAsync(string password)
         {
             await _authApiClient.DeleteMyAccountAsync(new(password));
-            _messenger.Send(new StatusUpdateMessage("Your account has been successfully deleted.", StatusMessageType.Success));
+            _messenger.Send(new LoginInfoMessage("Your account has been successfully deleted."));
             await LogoutAsync();
         }
 

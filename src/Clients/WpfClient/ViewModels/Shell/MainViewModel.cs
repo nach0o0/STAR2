@@ -17,12 +17,12 @@ using WpfClient.ViewModels.User;
 
 namespace WpfClient.ViewModels.Shell
 {
-    public partial class MainViewModel : ViewModelBase, IRecipient<StatusUpdateMessage>
+    public partial class MainViewModel : ViewModelBase, IRecipient<LoginInfoMessage>
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IUserStateService _userStateService;
 
-        private StatusUpdateMessage? _pendingMessage;
+        private LoginInfoMessage? _pendingLoginMessage;
 
         [ObservableProperty]
         private ViewModelBase _currentViewModel;
@@ -34,14 +34,14 @@ namespace WpfClient.ViewModels.Shell
 
             _userStateService.PropertyChanged += UserStateService_PropertyChanged;
 
-            messenger.Register<StatusUpdateMessage>(this);
+            messenger.Register<LoginInfoMessage>(this);
 
-            UpdateViewForCurrentState();
+            _currentViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
         }
 
-        public void Receive(StatusUpdateMessage message)
+        public void Receive(LoginInfoMessage message)
         {
-            _pendingMessage = message;
+            _pendingLoginMessage = message;
         }
 
         private void UserStateService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -62,10 +62,12 @@ namespace WpfClient.ViewModels.Shell
                 {
                     var loginViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
 
-                    if (_pendingMessage != null)
+                    // 6. Die zwischengespeicherte Nachricht an das neue ViewModel übergeben
+                    if (_pendingLoginMessage != null)
                     {
-                        loginViewModel.SetInitialMessage(_pendingMessage);
-                        _pendingMessage = null;
+                        // Wir rufen eine Methode im LoginViewModel auf, um die Nachricht zu übergeben
+                        loginViewModel.SetInitialMessage(_pendingLoginMessage);
+                        _pendingLoginMessage = null; // Nachricht wurde zugestellt
                     }
 
                     CurrentViewModel = loginViewModel;
