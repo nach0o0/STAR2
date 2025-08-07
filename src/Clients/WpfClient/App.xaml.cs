@@ -7,6 +7,7 @@ using WpfClient.Services.Api.Interfaces;
 using WpfClient.Services.Application.Auth;
 using WpfClient.Services.Application.MyEmployeeProfile;
 using WpfClient.Services.Application.Navigation;
+using WpfClient.Services.Application.Notification;
 using WpfClient.Services.Application.UserState;
 using WpfClient.ViewModels;
 using WpfClient.ViewModels.Authentication;
@@ -34,6 +35,7 @@ namespace WpfClient
         {
             // ViewModels
             services.AddSingleton<MainViewModel>();
+            services.AddSingleton<NotificationViewModel>();
             services.AddTransient<LoginViewModel>();
             services.AddTransient<RegisterViewModel>();
             services.AddTransient<DashboardViewModel>();
@@ -61,6 +63,7 @@ namespace WpfClient
             services.AddSingleton<IMyEmployeeProfileService, MyEmployeeProfileService>();
 
             // Hilfsdienste
+            services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
 

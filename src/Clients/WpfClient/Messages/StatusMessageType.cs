@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace WpfClient.Messages
 {
-    public record LoginInfoMessage(string Message);
+    public enum StatusMessageType { Success, Error }
 }

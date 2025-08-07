@@ -10,6 +10,7 @@ using WpfClient.Messages;
 using WpfClient.Models;
 using WpfClient.Security;
 using WpfClient.Services.Api.Interfaces;
+using WpfClient.Services.Application.Notification;
 
 namespace WpfClient.Services.Application.Auth
 {
@@ -18,17 +19,20 @@ namespace WpfClient.Services.Application.Auth
         private readonly IAuthApiClient _authApiClient;
         private readonly ISessionApiClient _sessionApiClient;
         private readonly IMessenger _messenger;
+        private readonly INotificationService _notificationService;
 
         private string? _accessToken;
 
         public AuthService(
             IAuthApiClient authApiClient,
             ISessionApiClient sessionApiClient,
-            IMessenger messenger)
+            IMessenger messenger,
+            INotificationService notificationService)
         {
             _authApiClient = authApiClient;
             _sessionApiClient = sessionApiClient;
             _messenger = messenger;
+            _notificationService = notificationService;
         }
 
         public string? GetAccessToken() => _accessToken;
@@ -96,7 +100,7 @@ namespace WpfClient.Services.Application.Auth
 
             if (response != null)
             {
-                _messenger.Send(new LoginInfoMessage("Registration successful! Please log in."));
+                _notificationService.ShowMessage("Registration successful! Please log in.", StatusMessageType.Success);
                 return true;
             }
 
@@ -106,14 +110,14 @@ namespace WpfClient.Services.Application.Auth
         public async Task ChangePasswordAsync(string oldPassword, string newPassword)
         {
             await _authApiClient.ChangePasswordAsync(new(oldPassword, newPassword));
-            _messenger.Send(new LoginInfoMessage("Password changed successfully. Please log in again."));
+            _notificationService.ShowMessage("Password changed successfully. Please log in again.", StatusMessageType.Success);
             await LogoutAsync();
         }
 
         public async Task DeleteMyAccountAsync(string password)
         {
             await _authApiClient.DeleteMyAccountAsync(new(password));
-            _messenger.Send(new LoginInfoMessage("Your account has been successfully deleted."));
+            _notificationService.ShowMessage("Your account has been successfully deleted.", StatusMessageType.Success);
             await LogoutAsync();
         }
 

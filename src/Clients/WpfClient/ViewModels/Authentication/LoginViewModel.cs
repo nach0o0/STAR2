@@ -12,20 +12,12 @@ namespace WpfClient.ViewModels.Authentication
     {
         private readonly IAuthService _authService;
 
-        [ObservableProperty]
-        private string? _infoMessage;
-
         public LoginViewModel(
             IAuthService authService, 
             INavigationService navigationService)
             : base(navigationService)
         {
             _authService = authService;
-        }
-
-        public void SetInitialMessage(LoginInfoMessage message)
-        {
-            InfoMessage = message.Message;
         }
 
         protected override async Task ExecuteSubmitAsync()

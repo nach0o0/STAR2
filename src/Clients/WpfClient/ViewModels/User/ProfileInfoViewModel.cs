@@ -15,8 +15,6 @@ namespace WpfClient.ViewModels.User
     {
         private readonly IMyEmployeeProfileService _myProfileService;
         private readonly IUserStateService _userStateService;
-        private readonly IMessenger _messenger;
-        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private MyEmployeeProfileModel _profile;
@@ -26,14 +24,10 @@ namespace WpfClient.ViewModels.User
 
         public ProfileInfoViewModel(
             IMyEmployeeProfileService myProfileService,
-            IUserStateService userStateService,
-            IMessenger messenger,
-            INavigationService navigationService)
+            IUserStateService userStateService)
         {
             _myProfileService = myProfileService;
             _userStateService = userStateService;
-            _messenger = messenger;
-            _navigationService = navigationService;
 
             _profile = _userStateService.Profile ?? new MyEmployeeProfileModel();
             _userStateService.PropertyChanged += UserStateService_PropertyChanged;
@@ -64,7 +58,6 @@ namespace WpfClient.ViewModels.User
             await ExecuteCommandAsync(async () =>
             {
                 await _myProfileService.UpdateMyProfileAsync(Profile.FirstName, Profile.LastName);
-                _messenger.Send(new StatusUpdateMessage("Profile updated successfully.", StatusMessageType.Success));
             });
         }
 

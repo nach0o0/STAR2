@@ -17,31 +17,25 @@ using WpfClient.ViewModels.User;
 
 namespace WpfClient.ViewModels.Shell
 {
-    public partial class MainViewModel : ViewModelBase, IRecipient<LoginInfoMessage>
+    public partial class MainViewModel : ViewModelBase
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IUserStateService _userStateService;
 
-        private LoginInfoMessage? _pendingLoginMessage;
+        public NotificationViewModel NotificationViewModel { get; }
 
         [ObservableProperty]
         private ViewModelBase _currentViewModel;
 
-        public MainViewModel(IServiceProvider serviceProvider, IUserStateService userStateService, IMessenger messenger)
+        public MainViewModel(IServiceProvider serviceProvider,
+                             IUserStateService userStateService,
+                             NotificationViewModel notificationViewModel)
         {
             _serviceProvider = serviceProvider;
             _userStateService = userStateService;
-
+            NotificationViewModel = notificationViewModel;
             _userStateService.PropertyChanged += UserStateService_PropertyChanged;
-
-            messenger.Register<LoginInfoMessage>(this);
-
-            _currentViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
-        }
-
-        public void Receive(LoginInfoMessage message)
-        {
-            _pendingLoginMessage = message;
+            UpdateViewForCurrentState();
         }
 
         private void UserStateService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -60,17 +54,7 @@ namespace WpfClient.ViewModels.Shell
             {
                 if (CurrentViewModel is not LoginViewModel)
                 {
-                    var loginViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
-
-                    // 6. Die zwischengespeicherte Nachricht an das neue ViewModel übergeben
-                    if (_pendingLoginMessage != null)
-                    {
-                        // Wir rufen eine Methode im LoginViewModel auf, um die Nachricht zu übergeben
-                        loginViewModel.SetInitialMessage(_pendingLoginMessage);
-                        _pendingLoginMessage = null; // Nachricht wurde zugestellt
-                    }
-
-                    CurrentViewModel = loginViewModel;
+                    CurrentViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
                 }
             }
             else

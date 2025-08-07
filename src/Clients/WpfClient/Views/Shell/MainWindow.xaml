@@ -3,10 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfClient.Views.Shell"
+        xmlns:shellViews="clr-namespace:WpfClient.Views.Shell"
         mc:Ignorable="d"
         Title="STAR" Height="720" Width="1280">
 
-    <ContentControl Content="{Binding CurrentViewModel}" />
+    <Grid>
+        <ContentControl Content="{Binding CurrentViewModel}" />
+
+        <shellViews:NotificationView 
+            DataContext="{Binding NotificationViewModel}"
+            VerticalAlignment="Bottom"
+            Margin="0,0,0,20"
+            IsHitTestVisible="False"/>
+    </Grid>
     
 </Window>
