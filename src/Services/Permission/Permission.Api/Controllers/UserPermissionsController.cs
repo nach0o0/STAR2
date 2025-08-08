@@ -5,6 +5,8 @@ using Permission.Application.Features.Commands.AssignDirectPermissionToUser;
 using Permission.Application.Features.Commands.AssignRoleToUser;
 using Permission.Application.Features.Commands.RemoveDirectPermissionFromUser;
 using Permission.Application.Features.Commands.RemoveRoleFromUser;
+using Permission.Application.Features.Queries.GetAssignmentsByScope;
+using Permission.Application.Features.Queries.GetAssignmentsForUserInScope;
 using Permission.Contracts.Requests;
 using Permission.Contracts.Responses;
 using Permission.Domain.Authorization;
@@ -70,6 +72,40 @@ namespace Permission.Api.Controllers
             var command = new RemoveRoleFromUserCommand(request.UserId, request.RoleId, request.Scope);
             await _sender.Send(command);
             return NoContent();
+        }
+
+        [HttpGet("user")]
+        [Authorize]
+        public async Task<IActionResult> GetAssignmentsForUserInScope([FromQuery] Guid userId, [FromQuery] string scope)
+        {
+            var query = new GetAssignmentsForUserInScopeQuery(userId, scope);
+            var queryResult = await _sender.Send(query);
+
+            var response = new UserAssignmentsResponse(
+                queryResult.AssignedRoles.Select(r => new AssignedRoleResponse(r.RoleId, r.Name, r.PermissionsInRole)).ToList(),
+                queryResult.DirectPermissions.Select(p => new DirectPermissionResponse(p.PermissionId, p.Description)).ToList()
+            );
+
+            return Ok(response);
+        }
+
+        [HttpGet("by-scope")]
+        [Authorize(Policy = AssignmentPermissions.ReadAssignments)]
+        public async Task<IActionResult> GetAssignmentsByScope([FromQuery] string scope)
+        {
+            var query = new GetAssignmentsByScopeQuery(scope);
+            var queryResult = await _sender.Send(query);
+
+            var response = new AssignmentsByScopeResponse(
+                queryResult.UserAssignments.Select(ua => new UserAssignmentsInScopeResponse(
+                    ua.UserId,
+                    ua.UserEmail,
+                    ua.AssignedRoles.Select(r => new AssignedRoleResponse(r.RoleId, r.Name, r.PermissionsInRole)).ToList(),
+                    ua.DirectPermissions.Select(p => new DirectPermissionResponse(p.PermissionId, p.Description)).ToList()
+                )).ToList()
+            );
+
+            return Ok(response);
         }
     }
 }

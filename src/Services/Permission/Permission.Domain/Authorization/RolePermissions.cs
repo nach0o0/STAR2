@@ -13,13 +13,15 @@ namespace Permission.Domain.Authorization
         public const string Update = "role:update";
         public const string Delete = "role:delete";
         public const string AssignPermission = "role:assign-permission";
+        public const string Read = "role:read";
 
         public static IReadOnlyCollection<(string Id, string Description, List<string> PermittedScopeTypes)> AllPermissions { get; } = new[]
         {
             (Create, "Allows creating roles.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup }),
             (Update, "Allows updating roles.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup }),
             (Delete, "Allows deleting roles.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup }),
-            (AssignPermission, "Allows assigning permissions to roles.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup })
-    };
+            (AssignPermission, "Allows assigning permissions to roles.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup }),
+            (Read, "Allows reading roles.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup })
+        };
     }
 }

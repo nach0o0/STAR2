@@ -40,5 +40,22 @@ namespace WpfClient.Services.Application.Permission
             return _userStateService.CurrentUser.PermissionsByScope
                 .TryGetValue(scope, out var permissions) && permissions.Contains(permissionId);
         }
+
+        public bool HasAnyPermissionInScope(IEnumerable<string> permissionIds, string scope)
+        {
+            if (_userStateService.CurrentUser?.PermissionsByScope is null)
+            {
+                return false;
+            }
+
+            // Prüft, ob der Benutzer im angegebenen Scope überhaupt Berechtigungen hat.
+            if (!_userStateService.CurrentUser.PermissionsByScope.TryGetValue(scope, out var userPermissionsInScope))
+            {
+                return false;
+            }
+
+            // Prüft, ob es eine Schnittmenge zwischen den benötigten und den vorhandenen Berechtigungen gibt.
+            return permissionIds.Any(requiredPermission => userPermissionsInScope.Contains(requiredPermission));
+        }
     }
 }

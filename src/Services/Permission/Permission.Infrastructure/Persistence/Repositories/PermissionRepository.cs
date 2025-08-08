@@ -36,5 +36,13 @@ namespace Permission.Infrastructure.Persistence.Repositories
                 await _dbContext.Permissions.AddRangeAsync(newPermissions, cancellationToken);
             }
         }
+
+        public async Task<List<Domain.Entities.Permission>> GetByScopeTypeAsync(string scopeType, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Permissions
+                .Include(p => p.PermittedScopeTypes)
+                .Where(p => p.PermittedScopeTypes.Any(st => st.ScopeType == scopeType))
+                .ToListAsync(cancellationToken);
+        }
     }
 }

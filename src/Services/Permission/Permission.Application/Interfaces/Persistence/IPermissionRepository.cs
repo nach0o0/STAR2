@@ -10,5 +10,6 @@ namespace Permission.Application.Interfaces.Persistence
     {
         Task<Domain.Entities.Permission?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
         Task AddRangeAsync(IEnumerable<Domain.Entities.Permission> permissions, CancellationToken cancellationToken = default);
+        Task<List<Domain.Entities.Permission>> GetByScopeTypeAsync(string scopeType, CancellationToken cancellationToken = default);
     }
 }

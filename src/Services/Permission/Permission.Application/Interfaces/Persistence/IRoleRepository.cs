@@ -19,6 +19,7 @@ namespace Permission.Application.Interfaces.Persistence
         Task RemovePermissionFromRoleAsync(Guid roleId, string permissionId, CancellationToken cancellationToken = default);
         Task<List<Guid>> GetRolesByPermissionIdAsync(string permissionId, CancellationToken cancellationToken = default);
         Task<List<Role>> GetRolesByBaseRoleIdAsync(Guid baseRoleId, CancellationToken cancellationToken = default);
-        Task<Role?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
+        Task<Role?> GetByNameAsync(string name, CancellationToken cancellationToken = default); 
+        Task<List<Role>> GetByScopeAsync(string scope, CancellationToken cancellationToken = default);
     }
 }

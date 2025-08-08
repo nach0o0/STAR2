@@ -47,8 +47,14 @@
     <DataTemplate DataType="{x:Type adminVM:SystemAdminViewModel}">
         <adminViews:SystemAdminView/>
     </DataTemplate>
-    
-    
+    <DataTemplate DataType="{x:Type adminVM:UserManagementViewModel}">
+        <adminViews:UserManagementView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type adminVM:RoleManagementViewModel}">
+        <adminViews:RoleManagementView/>
+    </DataTemplate>
+
+
 
     <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
         <views:HomeView/>

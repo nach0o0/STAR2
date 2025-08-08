@@ -51,6 +51,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 var allPermissions = RolePermissions.AllPermissions
+    .Concat(PermissionPermissions.AllPermissions)
     .Concat(AssignmentPermissions.AllPermissions);
 
 // Registriert alle Policies aus allen Listen.

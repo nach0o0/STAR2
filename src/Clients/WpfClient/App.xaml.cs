@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using WpfClient.Factories.ViewModel;
 using WpfClient.Services.Api.Extensions;
 using WpfClient.Services.Api.Handlers;
 using WpfClient.Services.Api.Interfaces;
@@ -37,6 +38,9 @@ namespace WpfClient
 
         private void ConfigureServices(IServiceCollection services)
         {
+            // Factories
+            services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+
             // ViewModels
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<NotificationViewModel>();

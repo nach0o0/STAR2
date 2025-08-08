@@ -10,5 +10,6 @@ namespace WpfClient.Services.Application.Permission
     {
         bool HasPermission(string permissionId);
         bool HasPermissionInScope(string permissionId, string scope);
+        bool HasAnyPermissionInScope(IEnumerable<string> permissionIds, string scope);
     }
 }

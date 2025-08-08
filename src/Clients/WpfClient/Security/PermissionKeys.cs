@@ -42,11 +42,14 @@ namespace WpfClient.Security
         public const string InvitationRevoke = "invitation:revoke";
 
         // === Permission Service ===
+        public const string RoleRead = "role:read";
         public const string RoleCreate = "role:create";
         public const string RoleUpdate = "role:update";
         public const string RoleDelete = "role:delete";
         public const string RoleAssignPermission = "role:assign-permission";
 
+        public const string PermissionRead = "permission:read";
+        public const string AssignmentRead = "permission:read-assignments";
         public const string PermissionAssignRole = "permission:assign-role";
         public const string PermissionAssignDirect = "permission:assign-direct";
     }

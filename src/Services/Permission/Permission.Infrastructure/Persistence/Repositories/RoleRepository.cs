@@ -103,5 +103,15 @@ namespace Permission.Infrastructure.Persistence.Repositories
             return await _dbContext.Roles
                 .FirstOrDefaultAsync(r => r.Name == name && r.Scope == null, cancellationToken);
         }
+
+        public async Task<List<Role>> GetByScopeAsync(string scope, CancellationToken cancellationToken = default)
+        {
+            var roles = await _dbContext.Roles
+                .Include(r => r.Permissions)
+                .Where(r => r.Scope == scope || r.Scope == null)
+                .ToListAsync(cancellationToken);
+
+            return roles;
+        }
     }
 }

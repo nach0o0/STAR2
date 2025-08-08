@@ -36,15 +36,15 @@ namespace WpfClient.ViewModels.Shell
             _selectedViewModel = _serviceProvider.GetRequiredService<HomeViewModel>();
 
             var adminPermissions = new[]
-                {
-                    PermissionKeys.RoleCreate,
-                    PermissionKeys.RoleUpdate,
-                    PermissionKeys.RoleDelete,
-                    PermissionKeys.RoleAssignPermission,
-                    PermissionKeys.PermissionAssignRole,
-                    PermissionKeys.PermissionAssignDirect,
-                    PermissionKeys.PrivilegedResetPassword
-                };
+            {
+                PermissionKeys.RoleCreate,
+                PermissionKeys.RoleUpdate,
+                PermissionKeys.RoleDelete,
+                PermissionKeys.RoleAssignPermission,
+                PermissionKeys.PermissionAssignRole,
+                PermissionKeys.PermissionAssignDirect,
+                PermissionKeys.PrivilegedResetPassword
+            };
             CanAccessSystemAdministration = adminPermissions.Any(permission =>
                 _permissionService.HasPermissionInScope(permission, "global"));
         }

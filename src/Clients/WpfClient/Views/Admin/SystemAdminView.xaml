@@ -4,11 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfClient.Views.Admin"
+             xmlns:converters="clr-namespace:WpfClient.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
 
-    <Grid>
-        <TextBlock FontSize="28" FontWeight="SemiBold" Margin="30"
-                   Text="System Administration"/>
-    </Grid>
+    <StackPanel Margin="30">
+        <TextBlock Text="System Administration" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
+
+        <TabControl>
+            <TabItem Header="Role Management" 
+                     Visibility="{Binding CanViewRoleManagementTab, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ContentControl Content="{Binding RoleManagementViewModel}"/>
+            </TabItem>
+
+            <TabItem Header="User Management"
+                     Visibility="{Binding CanViewUserManagementTab, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ContentControl Content="{Binding UserManagementViewModel}"/>
+            </TabItem>
+        </TabControl>
+    </StackPanel>
 </UserControl>

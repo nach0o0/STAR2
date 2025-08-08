@@ -6,6 +6,8 @@ using Permission.Application.Features.Commands.CreateRole;
 using Permission.Application.Features.Commands.DeleteRole;
 using Permission.Application.Features.Commands.RemovePermissionFromRole;
 using Permission.Application.Features.Commands.UpdateRole;
+using Permission.Application.Features.Queries.GetPermissionsByRole;
+using Permission.Application.Features.Queries.GetRolesByScope;
 using Permission.Contracts.Requests;
 using Permission.Contracts.Responses;
 using Permission.Domain.Authorization;
@@ -69,6 +71,35 @@ namespace Permission.Api.Controllers
             var command = new RemovePermissionFromRoleCommand(roleId, permissionId);
             await _sender.Send(command);
             return NoContent();
+        }
+
+        [HttpGet]
+        [Authorize(Policy = RolePermissions.Read)]
+        public async Task<IActionResult> GetRolesByScope([FromQuery] string scope)
+        {
+            var query = new GetRolesByScopeQuery(scope);
+            var queryResult = await _sender.Send(query);
+
+            var response = queryResult.Select(r => new RoleResponse(
+                r.Id,
+                r.Name,
+                r.Description,
+                r.Permissions
+            )).ToList();
+
+            return Ok(response);
+        }
+
+        [HttpGet("{roleId:guid}/permissions")]
+        [Authorize(Policy = RolePermissions.Read)]
+        public async Task<IActionResult> GetPermissionsByRole(Guid roleId)
+        {
+            var query = new GetPermissionsByRoleQuery(roleId);
+            var queryResult = await _sender.Send(query);
+
+            var response = queryResult.Select(p => new PermissionResponse(p.Id, p.Description)).ToList();
+
+            return Ok(response);
         }
     }
 }

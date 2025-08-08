@@ -11,11 +11,13 @@ namespace Permission.Domain.Authorization
     {
         public const string AssignRole = "permission:assign-role";
         public const string AssignDirect = "permission:assign-direct";
+        public const string ReadAssignments = "permission:read-assignments";
 
         public static IReadOnlyCollection<(string Id, string Description, List<string> PermittedScopeTypes)> AllPermissions { get; } = new[]
         {
             (AssignRole, "Allows assigning roles to users.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup }),
-            (AssignDirect, "Allows assigning direct permissions to users.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup })
+            (AssignDirect, "Allows assigning direct permissions to users.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup }),
+            (ReadAssignments, "Allows reading user permission assignments.", new List<string> { PermittedScopeTypes.Global, PermittedScopeTypes.Organization, PermittedScopeTypes.EmployeeGroup })
         };
     }
 }
