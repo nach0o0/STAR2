@@ -10,13 +10,13 @@
 
     <GroupBox Header="Active Sessions" Padding="15" Margin="0,20,0,0">
         <StackPanel>
-            <TextBlock Text="Here you can see all your active sessions. Logging out will only end the current session." TextWrapping="Wrap" Margin="0,0,0,15"/>
+            <ui:TextBlock Text="Here you can see all your active sessions. Logging out will only end the current session." TextWrapping="Wrap" Margin="0,0,0,15"/>
             <ListView ItemsSource="{Binding ActiveSessions}" BorderThickness="0" MaxHeight="200">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="0,5">
-                            <TextBlock Text="{Binding ClientInfo}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding CreatedAt, StringFormat='Logged in on: {0:dd.MM.yyyy HH:mm}'}" Foreground="Gray"/>
+                            <ui:TextBlock Text="{Binding ClientInfo}" FontWeight="SemiBold"/>
+                            <ui:TextBlock Text="{Binding CreatedAt, StringFormat='Logged in on: {0:dd.MM.yyyy HH:mm}'}" Foreground="Gray"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

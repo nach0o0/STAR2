@@ -10,8 +10,8 @@
 
     <GroupBox Header="Danger Zone" Padding="15" Margin="0,20,0,0" BorderBrush="{StaticResource ErrorBrush}">
         <StackPanel>
-            <TextBlock Text="Delete Account" FontWeight="Bold"/>
-            <TextBlock Text="This action cannot be undone. Please type your current password to confirm." 
+            <ui:TextBlock Text="Delete Account" FontWeight="Bold"/>
+            <ui:TextBlock Text="This action cannot be undone. Please type your current password to confirm." 
                        TextWrapping="Wrap" Margin="0,5,0,10"/>
             <ui:PasswordBox Password="{Binding ConfirmPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,20"/>
             <ui:Button Content="Delete My Account" Command="{Binding DeleteAccountCommand}" 

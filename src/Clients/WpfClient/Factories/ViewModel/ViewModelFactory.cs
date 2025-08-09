@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WpfClient.Services.Application.Permission;
+using WpfClient.Services.Application.PermissionAdmin;
 using WpfClient.ViewModels.Admin;
 
 namespace WpfClient.Factories.ViewModel
@@ -11,17 +12,17 @@ namespace WpfClient.Factories.ViewModel
     public class ViewModelFactory : IViewModelFactory
     {
         private readonly IPermissionService _permissionService;
+        private readonly IPermissionAdminService _permissionAdminService;
 
-        // Wir injizieren hier alle Abhängigkeiten, die die erstellten ViewModels benötigen.
-        public ViewModelFactory(IPermissionService permissionService)
+        public ViewModelFactory(IPermissionService permissionService, IPermissionAdminService permissionAdminService)
         {
             _permissionService = permissionService;
+            _permissionAdminService = permissionAdminService;
         }
 
         public RoleManagementViewModel CreateRoleManagementViewModel(string scope)
         {
-            // Erstellt eine neue Instanz und übergibt den Scope und die benötigten Services.
-            return new RoleManagementViewModel(_permissionService, scope);
+            return new RoleManagementViewModel(_permissionService, _permissionAdminService, scope);
         }
 
         public UserManagementViewModel CreateUserManagementViewModel(string scope)

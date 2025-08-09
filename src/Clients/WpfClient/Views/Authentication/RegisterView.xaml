@@ -17,25 +17,25 @@
                 <DropShadowEffect ShadowDepth="1" Color="Black" Opacity="0.1" BlurRadius="10"/>
             </Border.Effect>
             <StackPanel>
-                <TextBlock Text="Register" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                <ui:TextBlock Text="Register" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
-                <TextBlock Text="Email"/>
+                <ui:TextBlock Text="Email"/>
                 <ui:TextBox Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10"/>
 
-                <TextBlock Text="Password"/>
+                <ui:TextBlock Text="Password"/>
                 <ui:PasswordBox Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,20"/>
 
-                <TextBlock Text="Confirm Password"/>
+                <ui:TextBlock Text="Confirm Password"/>
                 <ui:PasswordBox Password="{Binding ConfirmPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,20"/>
 
                 <ui:Button Content="Register" Command="{Binding SubmitCommand}" IsDefault="True"/>
 
-                <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0">
+                <ui:TextBlock HorizontalAlignment="Center" Margin="0,20,0,0">
                     <Run Text="Already have an account?"/>
                     <Hyperlink Command="{Binding NavigateToLoginCommand}">
                         <Run Text="Login here"/>
                     </Hyperlink>
-                </TextBlock>
+                </ui:TextBlock>
 
                 <ui:ProgressRing IsIndeterminate="True" Margin="0,10,0,0"
                                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>

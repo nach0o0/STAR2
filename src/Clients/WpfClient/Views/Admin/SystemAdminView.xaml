@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:local="clr-namespace:WpfClient.Views.Admin"
              xmlns:converters="clr-namespace:WpfClient.Converters"
              mc:Ignorable="d" 
@@ -11,10 +12,20 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <StackPanel Margin="30">
-        <TextBlock Text="System Administration" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ui:TextBlock Grid.Row="0" Text="System Administration" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
-        <TabControl>
+        <TabControl Grid.Row="1">
+            <TabControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1" />
+                </ItemsPanelTemplate>
+            </TabControl.ItemsPanel>
+            
             <TabItem Header="Role Management" 
                      Visibility="{Binding CanViewRoleManagementTab, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ContentControl Content="{Binding RoleManagementViewModel}"/>
@@ -25,5 +36,5 @@
                 <ContentControl Content="{Binding UserManagementViewModel}"/>
             </TabItem>
         </TabControl>
-    </StackPanel>
+    </Grid>
 </UserControl>

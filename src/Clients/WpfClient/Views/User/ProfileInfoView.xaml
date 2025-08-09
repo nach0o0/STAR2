@@ -10,13 +10,13 @@
 
     <GroupBox Padding="15" Style="{StaticResource ProfileGroupBoxStyle}">
         <StackPanel>
-            <TextBlock Text="Email Address"/>
-            <TextBlock Text="{Binding Email}" FontWeight="SemiBold" Margin="0,5,0,15"/>
+            <ui:TextBlock Text="Email Address"/>
+            <ui:TextBlock Text="{Binding Email}" FontWeight="SemiBold" Margin="0,5,0,15"/>
 
-            <TextBlock Text="First Name"/>
+            <ui:TextBlock Text="First Name"/>
             <ui:TextBox Text="{Binding Profile.FirstName, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10"/>
 
-            <TextBlock Text="Last Name"/>
+            <ui:TextBlock Text="Last Name"/>
             <ui:TextBox Text="{Binding Profile.LastName, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,20"/>
 
             <ui:Button Content="Update Profile" Command="{Binding UpdateProfileCommand}" HorizontalAlignment="Left" Style="{StaticResource UpdateProfileButtonStyle}"/>

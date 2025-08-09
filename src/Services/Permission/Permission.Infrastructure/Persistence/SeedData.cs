@@ -47,10 +47,13 @@ namespace Permission.Infrastructure.Persistence
             var rolePermissions = new List<RoleToPermissionLink>
             {
                 // Weise dem System-Admin alle Berechtigungen aus dem PermissionService zu.
+                new(DefaultRoleDefinitions.SystemAdminRole.Id, PermissionPermissions.Read),
+                new(DefaultRoleDefinitions.SystemAdminRole.Id, RolePermissions.Read),
                 new(DefaultRoleDefinitions.SystemAdminRole.Id, RolePermissions.Create),
                 new(DefaultRoleDefinitions.SystemAdminRole.Id, RolePermissions.Update),
                 new(DefaultRoleDefinitions.SystemAdminRole.Id, RolePermissions.Delete),
                 new(DefaultRoleDefinitions.SystemAdminRole.Id, RolePermissions.AssignPermission),
+                new(DefaultRoleDefinitions.SystemAdminRole.Id, AssignmentPermissions.ReadAssignments),
                 new(DefaultRoleDefinitions.SystemAdminRole.Id, AssignmentPermissions.AssignRole),
                 new(DefaultRoleDefinitions.SystemAdminRole.Id, AssignmentPermissions.AssignDirect)
             };

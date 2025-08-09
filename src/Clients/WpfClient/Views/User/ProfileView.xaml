@@ -15,7 +15,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="30">
-            <TextBlock Text="My Profile" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <ui:TextBlock Text="My Profile" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
             
             <userViews:ProfileInfoView DataContext="{Binding ProfileInfoViewModel}" />
             <userViews:ChangePasswordView DataContext="{Binding ChangePasswordViewModel}" />

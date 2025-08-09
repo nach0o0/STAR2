@@ -11,6 +11,7 @@ using WpfClient.Services.Application.Navigation;
 using WpfClient.Services.Application.Notification;
 using WpfClient.Services.Application.Organization;
 using WpfClient.Services.Application.Permission;
+using WpfClient.Services.Application.PermissionAdmin;
 using WpfClient.Services.Application.UserState;
 using WpfClient.ViewModels;
 using WpfClient.ViewModels.Admin;
@@ -57,6 +58,9 @@ namespace WpfClient
             services.AddTransient<DeleteAccountViewModel>();
 
             services.AddTransient<SystemAdminViewModel>();
+            services.AddTransient<RoleManagementViewModel>();
+            services.AddTransient<RoleListViewModel>();
+            services.AddTransient<UserManagementViewModel>();
 
 
             services.AddTransient<OrganizationWorkspaceViewModel>();
@@ -77,6 +81,7 @@ namespace WpfClient
 
             // Reine "Action" Services (Singleton, da sie selbst keinen Zustand halten)
             services.AddSingleton<IPermissionService, PermissionService>();
+            services.AddSingleton<IPermissionAdminService, PermissionAdminService>();
             services.AddSingleton<IOrganizationService, OrganizationService>();
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<IMyEmployeeProfileService, MyEmployeeProfileService>();

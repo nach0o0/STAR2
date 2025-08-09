@@ -10,10 +10,10 @@
 
     <GroupBox Header="Create New Organization" Padding="15">
         <StackPanel>
-            <TextBlock Text="Organization Name"/>
+            <ui:TextBlock Text="Organization Name"/>
             <ui:TextBox Text="{Binding OrganizationName, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10"/>
 
-            <TextBlock Text="Abbreviation"/>
+            <ui:TextBlock Text="Abbreviation"/>
             <ui:TextBox Text="{Binding OrganizationAbbreviation, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,20"/>
 
             <ui:Button Content="Create Organization" 

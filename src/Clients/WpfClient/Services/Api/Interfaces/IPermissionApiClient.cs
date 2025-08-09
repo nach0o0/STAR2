@@ -11,6 +11,9 @@ namespace WpfClient.Services.Api.Interfaces
 {
     public interface IPermissionApiClient
     {
+        [Get("/api/roles")]
+        Task<List<RoleResponse>> GetRolesByScopeAsync([Query] string scope);
+
         [Post("/api/roles")]
         Task<CreateRoleResponse> CreateRoleAsync([Body] CreateRoleRequest request);
 
@@ -25,6 +28,20 @@ namespace WpfClient.Services.Api.Interfaces
 
         [Delete("/api/roles/{roleId}/permissions/{permissionId}")]
         Task RemovePermissionFromRoleAsync(Guid roleId, string permissionId);
+
+
+        [Get("/api/permissions")]
+        Task<List<PermissionResponse>> GetPermissionsByScopeAsync([Query] string scope);
+
+        [Get("/api/roles/{roleId}/permissions")]
+        Task<List<PermissionResponse>> GetPermissionsByRoleAsync(Guid roleId);
+
+
+        [Get("/api/user-permissions/user")]
+        Task<UserAssignmentsResponse> GetAssignmentsForUserInScopeAsync([Query] Guid userId, [Query] string scope);
+
+        [Get("/api/user-permissions/by-scope")]
+        Task<AssignmentsByScopeResponse> GetAssignmentsByScopeAsync([Query] string scope);
 
         [Post("/api/user-permissions/roles")]
         Task<AssignRoleToUserResponse> AssignRoleToUserAsync([Body] AssignRoleToUserRequest request);
