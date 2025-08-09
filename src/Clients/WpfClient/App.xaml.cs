@@ -60,6 +60,7 @@ namespace WpfClient
             services.AddTransient<SystemAdminViewModel>();
             services.AddTransient<RoleManagementViewModel>();
             services.AddTransient<RoleListViewModel>();
+            services.AddTransient<CreateRoleViewModel>();
             services.AddTransient<UserManagementViewModel>();
 
 

@@ -25,6 +25,9 @@ namespace WpfClient.ViewModels.Admin
         [ObservableProperty]
         private RoleModel? _selectedRole;
 
+        [ObservableProperty]
+        private bool _createNewRoleRequested;
+
         public bool CanCreateRoles { get; }
 
         public RoleListViewModel(IPermissionService permissionService, IPermissionAdminService permissionAdminService, string scope)
@@ -33,6 +36,12 @@ namespace WpfClient.ViewModels.Admin
             _permissionAdminService = permissionAdminService;
             CanCreateRoles = permissionService.HasPermissionInScope(PermissionKeys.RoleCreate, _scope);
             LoadRolesCommand.Execute(null);
+        }
+
+        [RelayCommand]
+        private void RequestCreateNewRole()
+        {
+            CreateNewRoleRequested = true;
         }
 
         [RelayCommand]

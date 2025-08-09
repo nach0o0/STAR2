@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Shared.Application.Behaviors
 {
@@ -7,10 +8,12 @@ namespace Shared.Application.Behaviors
         where TRequest : IRequest<TResponse>
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
+        private readonly ILogger<ValidationBehavior<TRequest, TResponse>> _logger;
 
-        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators, ILogger<ValidationBehavior<TRequest, TResponse>> logger)
         {
             _validators = validators;
+            _logger = logger;
         }
 
         public async Task<TResponse> Handle(
@@ -18,6 +21,7 @@ namespace Shared.Application.Behaviors
             RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
+            _logger.LogInformation("[BEHAVIOR] Validation START for {RequestType}", typeof(TRequest).Name);
             if (!_validators.Any())
             {
                 return await next();
@@ -38,9 +42,11 @@ namespace Shared.Application.Behaviors
 
             if (errors.Any())
             {
+                _logger.LogWarning("[BEHAVIOR] Validation FAILED for {RequestType}", typeof(TRequest).Name);
                 throw new Exceptions.ValidationException(errors);
             }
 
+            _logger.LogInformation("[BEHAVIOR] Validation END for {RequestType}", typeof(TRequest).Name);
             return await next();
         }
     }

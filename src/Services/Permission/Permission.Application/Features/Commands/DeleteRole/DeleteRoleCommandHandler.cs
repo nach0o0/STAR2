@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Permission.Application.Interfaces.Persistence;
 using Permission.Domain.Authorization;
 using Permission.Domain.Entities;
@@ -16,17 +17,20 @@ namespace Permission.Application.Features.Commands.DeleteRole
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IUserPermissionAssignmentRepository _assignmentRepository;
+        private readonly ILogger<DeleteRoleCommandHandler> _logger;
 
         public DeleteRoleCommandHandler(
             IRoleRepository roleRepository,
-            IUserPermissionAssignmentRepository assignmentRepository)
+            IUserPermissionAssignmentRepository assignmentRepository, ILogger<DeleteRoleCommandHandler> logger)
         {
             _roleRepository = roleRepository;
             _assignmentRepository = assignmentRepository;
+            _logger = logger;
         }
 
         public async Task Handle(DeleteRoleCommand command, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("[HANDLER] Executing DeleteRoleCommandHandler for RoleId {RoleId}", command.RoleId);
             var role = await _roleRepository.GetByIdAsync(command.RoleId, cancellationToken);
             if (role is null)
             {

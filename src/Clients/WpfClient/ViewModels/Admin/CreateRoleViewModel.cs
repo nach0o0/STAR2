@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfClient.Models;
 using WpfClient.Services.Application.PermissionAdmin;
 using WpfClient.ViewModels.Base;
 
@@ -22,21 +23,38 @@ namespace WpfClient.ViewModels.Admin
         [ObservableProperty]
         private string _newRoleDescription = string.Empty;
 
+        [ObservableProperty]
+        private RoleModel? _newlyCreatedRole;
+
+        public event Action? CancelRequested;
+
         public CreateRoleViewModel(IPermissionAdminService permissionAdminService, string scope)
         {
             _permissionAdminService = permissionAdminService;
             _scope = scope;
         }
 
-        [RelayCommand(CanExecute = nameof(CanSubmit))]
-        private async Task Submit()
+        [RelayCommand]
+        private void Cancel()
         {
+            CancelRequested?.Invoke();
+        }
+
+        [RelayCommand(CanExecute = nameof(CanSubmit))]
+        private async Task<RoleModel?> Submit()
+        {
+            RoleModel? newlyCreatedRole = null;
             await ExecuteCommandAsync(async () =>
             {
-                await _permissionAdminService.CreateRoleAsync(NewRoleName, NewRoleDescription, _scope);
-                NewRoleName = string.Empty;
-                NewRoleDescription = string.Empty;
+                var newRole = await _permissionAdminService.CreateRoleAsync(NewRoleName, NewRoleDescription, _scope);
+                if (newRole != null)
+                {
+                    NewlyCreatedRole = newRole;
+                    //NewRoleName = string.Empty;
+                    //NewRoleDescription = string.Empty;
+                }
             });
+            return newlyCreatedRole;
         }
         private bool CanSubmit() => !string.IsNullOrWhiteSpace(NewRoleName);
     }

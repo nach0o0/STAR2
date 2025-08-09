@@ -18,10 +18,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- DI Konfiguration ---
 builder.Services.AddHttpContextAccessor();
+
 builder.Services
     .AddApplicationServices()
     .AddInfrastructureServices(builder.Configuration)
-    .AddSharedApplicationServices()
     .AddSharedAspNetCoreServices()
     .AddSharedInfrastructureServices()
     .AddSharedClients(builder.Configuration);

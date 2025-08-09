@@ -3,9 +3,11 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfClient.Factories.ViewModel;
 using WpfClient.Models;
 using WpfClient.Security;
 using WpfClient.Services.Application.Permission;
@@ -16,110 +18,87 @@ namespace WpfClient.ViewModels.Admin
 {
     public partial class RoleManagementViewModel : ViewModelBase
     {
+        private readonly IViewModelFactory _factory;
         private readonly string _scope;
-        private readonly IPermissionAdminService _permissionAdminService;
 
+        // Das ViewModel für die linke Spalte (die Liste der Rollen)
+        public RoleListViewModel RoleListViewModel { get; }
+
+        // Das ViewModel für die rechte Spalte (wird dynamisch gesetzt)
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsRoleSelected))]
-        private RoleModel? _selectedRole;
+        private ViewModelBase? _detailViewModel;
 
-        public bool IsRoleSelected => SelectedRole != null;
-
-        [ObservableProperty]
-        private ObservableCollection<RoleModel> _roles = new();
-
-        [ObservableProperty]
-        private bool _isCreateFormVisible;
-
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(SubmitCreateRoleCommand))]
-        private string _newRoleName = string.Empty;
-
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(SubmitCreateRoleCommand))]
-        private string _newRoleDescription = string.Empty;
-
-        public bool CanViewRoles { get; }
-        public bool CanCreateRoles { get; }
-        public bool CanEditRoleDetails { get; }
-        public bool CanManageRolePermissions { get; }
-        public bool CanDeleteRoles { get; }
-
-        public RoleManagementViewModel(IPermissionService permissionService, IPermissionAdminService permissionAdminService, string scope)
+        public RoleManagementViewModel(
+            IViewModelFactory factory,
+            string scope)
         {
+            _factory = factory;
             _scope = scope;
-            _permissionAdminService = permissionAdminService;
 
-            CanViewRoles = permissionService.HasPermissionInScope(PermissionKeys.RoleRead, _scope);
-            CanCreateRoles = permissionService.HasPermissionInScope(PermissionKeys.RoleCreate, _scope);
-            CanEditRoleDetails = permissionService.HasPermissionInScope(PermissionKeys.RoleUpdate, _scope);
-            CanManageRolePermissions = permissionService.HasPermissionInScope(PermissionKeys.RoleAssignPermission, _scope);
-            CanDeleteRoles = permissionService.HasPermissionInScope(PermissionKeys.RoleDelete, _scope);
+            // Erstelle das ViewModel für die linke Spalte
+            RoleListViewModel = _factory.CreateRoleListViewModel(_scope);
 
-            if (CanViewRoles)
+            // Abonniere die Events des Kind-ViewModels, um auf Aktionen zu reagieren
+            RoleListViewModel.PropertyChanged += OnRoleListPropertyChanged;
+        }
+
+        private async void OnRoleListPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            // Wenn in der Liste eine Rolle ausgewählt wird...
+            if (e.PropertyName == nameof(RoleListViewModel.SelectedRole))
             {
-                LoadRolesCommand.Execute(null);
+                if (RoleListViewModel.SelectedRole != null)
+                {
+                    var detailsVM = _factory.CreateRoleDetailsViewModel(RoleListViewModel.SelectedRole, _scope);
+                    detailsVM.RoleDeleted += OnRoleDeleted;
+                    DetailViewModel = detailsVM;
+                }
+                else
+                {
+                    // Wenn die Auswahl aufgehoben wird, leere die Detailansicht.
+                    DetailViewModel = null;
+                }
+            }
+            // Wenn der "Create"-Button geklickt wird...
+            else if (e.PropertyName == nameof(RoleListViewModel.CreateNewRoleRequested) && RoleListViewModel.CreateNewRoleRequested)
+            {
+                RoleListViewModel.SelectedRole = null; // Auswahl aufheben
+                var createVM = _factory.CreateCreateRoleViewModel(_scope);
+
+                createVM.PropertyChanged += OnNewRoleCreated;
+                createVM.CancelRequested += OnCreateCancelled;
+
+                DetailViewModel = createVM;
+                RoleListViewModel.CreateNewRoleRequested = false;
             }
         }
 
-        [RelayCommand]
-        private async Task LoadRolesAsync()
+        // Event-Handler für die Erstellung einer neuen Rolle
+        private void OnNewRoleCreated(object? sender, PropertyChangedEventArgs e)
         {
-            await ExecuteCommandAsync(async () =>
+            var createVM = sender as CreateRoleViewModel;
+            if (e.PropertyName == nameof(CreateRoleViewModel.NewlyCreatedRole) && createVM?.NewlyCreatedRole != null)
             {
-                var rolesList = await _permissionAdminService.GetRolesByScopeAsync(_scope);
-                Roles = new ObservableCollection<RoleModel>(rolesList);
-                SelectedRole = null;
-            });
+                RoleListViewModel.Roles.Add(createVM.NewlyCreatedRole);
+                RoleListViewModel.SelectedRole = createVM.NewlyCreatedRole;
+            }
         }
 
-        [RelayCommand]
-        private void ShowCreateRoleForm() => IsCreateFormVisible = true;
-
-        [RelayCommand]
-        private void CancelCreateRole()
+        // Event-Handler für das Löschen einer Rolle
+        private void OnRoleDeleted(Guid roleId)
         {
-            IsCreateFormVisible = false;
-            NewRoleName = string.Empty;
-            NewRoleDescription = string.Empty;
+            var roleToRemove = RoleListViewModel.Roles.FirstOrDefault(r => r.Id == roleId);
+            if (roleToRemove != null)
+            {
+                RoleListViewModel.Roles.Remove(roleToRemove);
+            }
+            DetailViewModel = null; // Detailansicht leeren
         }
 
-        [RelayCommand(CanExecute = nameof(CanSubmitCreateRole))]
-        private async Task SubmitCreateRole()
+        // Event-Handler für den Abbruch
+        private void OnCreateCancelled()
         {
-            await ExecuteCommandAsync(async () =>
-            {
-                var newRole = await _permissionAdminService.CreateRoleAsync(NewRoleName, NewRoleDescription, _scope);
-                if (newRole != null)
-                {
-                    Roles.Add(newRole);
-                    CancelCreateRole();
-                }
-            });
-        }
-        private bool CanSubmitCreateRole() => !string.IsNullOrWhiteSpace(NewRoleName);
-
-        [RelayCommand]
-        private async Task SaveChanges()
-        {
-            if (SelectedRole is null) return;
-            await ExecuteCommandAsync(async () =>
-            {
-                await _permissionAdminService.UpdateRoleAsync(SelectedRole.Id, SelectedRole.Name, SelectedRole.Description);
-                await LoadRolesAsync();
-            });
-        }
-
-        [RelayCommand]
-        private async Task DeleteRole()
-        {
-            if (SelectedRole is null) return;
-            await ExecuteCommandAsync(async () =>
-            {
-                await _permissionAdminService.DeleteRoleAsync(SelectedRole.Id);
-                Roles.Remove(SelectedRole);
-                SelectedRole = null;
-            });
+            DetailViewModel = null; // Detailansicht leeren
         }
     }
 }

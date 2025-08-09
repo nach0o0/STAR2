@@ -9,12 +9,39 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <Grid Visibility="{Binding CanViewRoles, Converter={StaticResource BooleanToVisibilityConverter}}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280" MinWidth="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentControl Grid.Column="0" 
+                        Content="{Binding RoleListViewModel}"/>
+
+        <Grid Grid.Column="1" Margin="20,10">
+            <ContentControl Content="{Binding DetailViewModel}"/>
+
+            <ui:TextBlock Text="Select a role or create a new one." 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" 
+                       FontSize="16" Foreground="Gray">
+                <ui:TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DetailViewModel}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:TextBlock.Style>
+            </ui:TextBlock>
+        </Grid>
+    </Grid>
+
+    <!--<Grid Visibility="{Binding CanViewRoles, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="280" MinWidth="200"/>
             <ColumnDefinition Width="*"/>
@@ -81,5 +108,5 @@
                    VerticalAlignment="Center" HorizontalAlignment="Center" 
                    FontSize="16" Foreground="Gray"
                    Visibility="{Binding IsRoleSelected, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-    </Grid>
+    </Grid>-->
 </UserControl>

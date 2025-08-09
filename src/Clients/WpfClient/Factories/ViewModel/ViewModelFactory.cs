@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfClient.Models;
 using WpfClient.Services.Application.Permission;
 using WpfClient.Services.Application.PermissionAdmin;
 using WpfClient.ViewModels.Admin;
@@ -22,7 +23,22 @@ namespace WpfClient.Factories.ViewModel
 
         public RoleManagementViewModel CreateRoleManagementViewModel(string scope)
         {
-            return new RoleManagementViewModel(_permissionService, _permissionAdminService, scope);
+            return new RoleManagementViewModel(this, scope);
+        }
+
+        public RoleListViewModel CreateRoleListViewModel(string scope)
+        {
+            return new RoleListViewModel(_permissionService, _permissionAdminService, scope);
+        }
+
+        public RoleDetailsViewModel CreateRoleDetailsViewModel(RoleModel role, string scope)
+        {
+            return new RoleDetailsViewModel(_permissionService, _permissionAdminService, role, scope);
+        }
+
+        public CreateRoleViewModel CreateCreateRoleViewModel(string scope)
+        {
+            return new CreateRoleViewModel(_permissionAdminService, scope);
         }
 
         public UserManagementViewModel CreateUserManagementViewModel(string scope)

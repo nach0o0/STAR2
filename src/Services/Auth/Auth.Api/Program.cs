@@ -17,10 +17,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- 1. Dependency Injection Konfiguration ---
 builder.Services.AddHttpContextAccessor();
+
+var authApplicationAssembly = typeof(Auth.Application.DependencyInjection).Assembly;
 builder.Services
     .AddApplicationServices()
     .AddInfrastructureServices(builder.Configuration)
-    .AddSharedApplicationServices()
+    .AddSharedApplicationServices(authApplicationAssembly)
     .AddSharedInfrastructureServices()
     .AddSharedAspNetCoreServices()
     .AddSharedClients(builder.Configuration);

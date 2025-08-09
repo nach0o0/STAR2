@@ -52,9 +52,10 @@ namespace Permission.Infrastructure.Persistence.Repositories
 
         public async Task<bool> NameExistsInScopeAsync(string name, string? scope, CancellationToken cancellationToken = default)
         {
+            var lowerCaseName = name.ToLower();
             return await _dbContext.Roles
                 .AnyAsync(r =>
-                    r.Name.Equals(name, StringComparison.OrdinalIgnoreCase) &&
+                    r.Name.ToLower() == lowerCaseName &&
                     (r.Scope == scope || r.Scope == null),
                     cancellationToken);
         }

@@ -23,10 +23,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- DI Konfiguration ---
 builder.Services.AddHttpContextAccessor();
+
+var organizationApplicationAssembly = typeof(Organization.Application.DependencyInjection).Assembly;
 builder.Services
     .AddApplicationServices()
     .AddInfrastructureServices(builder.Configuration)
-    .AddSharedApplicationServices()
+    .AddSharedApplicationServices(organizationApplicationAssembly)
     .AddSharedAspNetCoreServices()
     .AddSharedInfrastructureServices()
     .AddSharedClients(builder.Configuration);
