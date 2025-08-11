@@ -10,6 +10,7 @@ namespace Permission.Contracts.Responses
         Guid Id,
         string Name,
         string Description,
+        string? Scope,
         List<string> Permissions
     );
 }

@@ -7,6 +7,7 @@ using Organization.Application.Features.Commands.DeleteEmployeeGroup;
 using Organization.Application.Features.Commands.RemoveEmployeeFromGroup;
 using Organization.Application.Features.Commands.TransferEmployeeGroup;
 using Organization.Application.Features.Commands.UpdateEmployeeGroup;
+using Organization.Application.Features.Queries.GetEmployeesByEmployeeGroup;
 using Organization.Contracts.Requests;
 using Organization.Contracts.Responses;
 using Organization.Domain.Authorization;
@@ -79,6 +80,23 @@ namespace Organization.Api.Controllers
             var command = new RemoveEmployeeFromGroupCommand(employeeId, employeeGroupId);
             await _sender.Send(command);
             return NoContent();
+        }
+
+        [HttpGet("{employeeGroupId:guid}/employees")]
+        public async Task<IActionResult> GetEmployeesByEmployeeGroup(Guid employeeGroupId)
+        {
+            var query = new GetEmployeesByEmployeeGroupQuery(employeeGroupId);
+            var result = await _sender.Send(query);
+
+            var response = result.Select(e => new EmployeeResponse(
+                e.Id,
+                e.FirstName,
+                e.LastName,
+                e.UserId,
+                e.OrganizationId
+            )).ToList();
+
+            return Ok(response);
         }
     }
 }

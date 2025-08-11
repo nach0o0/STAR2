@@ -31,7 +31,7 @@ namespace Organization.Application.Features.DomainEventHandlers.EmployeeGroups
 
             // Finde den Mitarbeiter des Erstellers
             var creatorEmployee = await _employeeRepository.GetByUserIdAsync(creatorUserId, cancellationToken);
-            if (creatorEmployee is not null)
+            if (creatorEmployee is not null && creatorEmployee.OrganizationId.HasValue)
             {
                 // Sende den Command, um den Ersteller zur neuen Gruppe hinzuzufügen
                 var command = new AddEmployeeToGroupCommand(creatorEmployee.Id, group.Id);

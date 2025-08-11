@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="WpfClient.Views.Admin.AssignRoleDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:local="clr-namespace:WpfClient.Views.Admin"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <Border Padding="20" Background="White">
+        <StackPanel>
+            <TextBlock Text="Assign Role" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Select a role to assign:"/>
+            <ui:ListView ItemsSource="{Binding AvailableRoles}" 
+                      SelectedItem="{Binding SelectedRole}"
+                      MaxHeight="250" 
+                      Margin="0,5,0,20">
+                <ui:ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="5">
+                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Foreground="Gray"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ui:ListView.ItemTemplate>
+            </ui:ListView>
+
+            <StackPanel Orientation="Horizontal">
+                <ui:Button Content="Assign" Command="{Binding AssignRoleCommand}"/>
+                <ui:Button Content="Cancel" Command="{Binding CancelCommand}" Appearance="Secondary" Margin="10,0,0,0"/>
+            </StackPanel>
+
+        </StackPanel>
+    </Border>
+</UserControl>

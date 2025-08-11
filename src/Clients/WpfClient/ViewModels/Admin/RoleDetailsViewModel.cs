@@ -25,6 +25,7 @@ namespace WpfClient.ViewModels.Admin
         public bool CanManageRolePermissions { get; }
 
         public event Action<Guid>? RoleDeleted;
+        public event Action? ManagePermissionsRequested;
 
         public RoleDetailsViewModel(
             IPermissionService permissionService,
@@ -57,6 +58,12 @@ namespace WpfClient.ViewModels.Admin
                 await _permissionAdminService.DeleteRoleAsync(Role.Id);
                 RoleDeleted?.Invoke(Role.Id);
             });
+        }
+
+        [RelayCommand(CanExecute = nameof(CanManageRolePermissions))]
+        private void ManagePermissions()
+        {
+            ManagePermissionsRequested?.Invoke();
         }
     }
 }

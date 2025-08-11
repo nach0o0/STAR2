@@ -47,9 +47,6 @@
     <DataTemplate DataType="{x:Type adminVM:SystemAdminViewModel}">
         <adminViews:SystemAdminView/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type adminVM:UserManagementViewModel}">
-        <adminViews:UserManagementView/>
-    </DataTemplate>
     <DataTemplate DataType="{x:Type adminVM:RoleManagementViewModel}">
         <adminViews:RoleManagementView/>
     </DataTemplate>
@@ -62,10 +59,23 @@
     <DataTemplate DataType="{x:Type adminVM:CreateRoleViewModel}">
         <adminViews:CreateRoleView/>
     </DataTemplate>
-
-
-    <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
-        <views:HomeView/>
+    <DataTemplate DataType="{x:Type adminVM:ManageRolePermissionsViewModel}">
+        <adminViews:ManageRolePermissionsView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type adminVM:UserManagementViewModel}">
+        <adminViews:UserManagementView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type adminVM:UserListViewModel}">
+        <adminViews:UserListView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type adminVM:UserAssignmentsViewModel}">
+        <adminViews:UserAssignmentsView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type adminVM:AssignRoleDialogViewModel}">
+        <adminViews:AssignRoleDialogView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type adminVM:ManageDirectPermissionsViewModel}">
+        <adminViews:ManageDirectPermissionsView/>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type orgVM:OrganizationWorkspaceViewModel}">
@@ -73,6 +83,17 @@
     </DataTemplate>
     <DataTemplate DataType="{x:Type orgVM:CreateOrganizationViewModel}">
         <orgViews:CreateOrganizationView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type orgVM:OrganizationListViewModel}">
+        <orgViews:OrganizationListView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type orgVM:OrganizationDetailsViewModel}">
+        <orgViews:OrganizationDetailsView/>
+    </DataTemplate>
+
+
+        <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
+        <views:HomeView/>
     </DataTemplate>
 
 </ResourceDictionary>

@@ -26,6 +26,9 @@ namespace WpfClient.Services.Api.Interfaces
         [Get("/api/organizations/{organizationId}/employees")]
         Task<List<EmployeeResponse>> GetEmployeesByOrganizationAsync(Guid organizationId);
 
+        [Get("/api/organizations/relevant")]
+        Task<List<RelevantOrganizationResponse>> GetRelevantOrganizationsAsync();
+
 
         [Get("/api/employees/me")]
         Task<MyEmployeeProfileResponse?> GetMyEmployeeProfileAsync();
@@ -48,6 +51,9 @@ namespace WpfClient.Services.Api.Interfaces
 
         [Patch("/api/employeegroups/{employeeGroupId}/transfer")]
         Task TransferEmployeeGroupAsync(Guid employeeGroupId, [Body] TransferEmployeeGroupRequest request);
+
+        [Get("/api/employee-groups/{employeeGroupId}/employees")]
+        Task<List<EmployeeResponse>> GetEmployeesByEmployeeGroupAsync(Guid employeeGroupId);
 
 
         [Delete("/api/employees/{employeeId}/organization")]

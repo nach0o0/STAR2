@@ -6,47 +6,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfClient.Models;
 using WpfClient.Services.Api.Interfaces;
 using WpfClient.Services.Application.Notification;
 using WpfClient.Services.Application.Organization;
+using WpfClient.Services.Application.OrganizationAdmin;
+using WpfClient.Services.Application.PermissionAdmin;
 using WpfClient.ViewModels.Base;
 
 namespace WpfClient.ViewModels.Organization
 {
     public partial class CreateOrganizationViewModel : ViewModelBase
     {
-        private readonly IOrganizationService _organizationService;
+        private readonly IOrganizationAdminService _organizationAdminService;
+        private readonly Guid? _parentId;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(CreateOrganizationCommand))]
-        private string _organizationName = string.Empty;
+        [NotifyCanExecuteChangedFor(nameof(SubmitCommand))]
+        private string _newOrganizationName = string.Empty;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(CreateOrganizationCommand))]
-        private string _organizationAbbreviation = string.Empty;
+        private string _newOrganizationAbbreviation = string.Empty;
 
-        public CreateOrganizationViewModel(IOrganizationService organizationService)
+        public OrganizationModel? NewlyCreatedOrganization { get; private set; }
+        public event Action? CancelRequested;
+
+        public CreateOrganizationViewModel(IOrganizationAdminService organizationAdminService, Guid? parentId)
         {
-            _organizationService = organizationService;
+            _organizationAdminService = organizationAdminService;
+            _parentId = parentId;
         }
 
-        [RelayCommand(CanExecute = nameof(CanCreateOrganization))]
-        private async Task CreateOrganization()
+        [RelayCommand(CanExecute = nameof(CanSubmit))]
+        private async Task Submit()
         {
             await ExecuteCommandAsync(async () =>
             {
-                var success = await _organizationService.CreateOrganizationAsync(OrganizationName, OrganizationAbbreviation);
-
-                if (success)
+                var newOrg = await _organizationAdminService.CreateOrganizationAsync(NewOrganizationName, NewOrganizationAbbreviation, _parentId);
+                if (newOrg != null)
                 {
-                    OrganizationName = string.Empty;
-                    OrganizationAbbreviation = string.Empty;
+                    NewlyCreatedOrganization = newOrg; // Signal für den Orchestrator
                 }
             });
         }
+        private bool CanSubmit() => !string.IsNullOrWhiteSpace(NewOrganizationName);
 
-        private bool CanCreateOrganization() =>
-            !string.IsNullOrWhiteSpace(OrganizationName) &&
-            !string.IsNullOrWhiteSpace(OrganizationAbbreviation);
+        [RelayCommand]
+        private void Cancel()
+        {
+            // TODO: Event für den Orchestrator auslösen, um die Ansicht zu schließen.
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace Permission.Application.Features.Queries.GetRolesByScope
         Guid Id,
         string Name,
         string Description,
+        string? Scope,
         List<string> Permissions
     );
 }

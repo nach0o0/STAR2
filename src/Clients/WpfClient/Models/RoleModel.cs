@@ -20,6 +20,9 @@ namespace WpfClient.Models
         private string _description = string.Empty;
 
         [ObservableProperty]
+        private string? _scope;
+
+        [ObservableProperty]
         private ObservableCollection<string> _permissions = new();
     }
 }

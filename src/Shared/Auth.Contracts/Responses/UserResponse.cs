@@ -6,5 +6,8 @@ using System.Threading.Tasks;
 
 namespace Auth.Contracts.Responses
 {
-    public record UserResponse(Guid UserId, string Email);
+    public record UserResponse(
+        Guid UserId,
+        string Email
+    );
 }

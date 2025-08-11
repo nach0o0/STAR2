@@ -48,5 +48,12 @@ namespace Organization.Infrastructure.Persistence.Repositories
             return await _dbContext.Organizations
                 .AnyAsync(o => o.DefaultEmployeeGroupId == employeeGroupId, cancellationToken);
         }
+
+        public async Task<List<Domain.Entities.Organization>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Organizations
+                .Where(o => ids.Contains(o.Id))
+                .ToListAsync(cancellationToken);
+        }
     }
 }

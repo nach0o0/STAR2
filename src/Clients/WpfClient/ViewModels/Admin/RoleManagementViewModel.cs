@@ -50,6 +50,7 @@ namespace WpfClient.ViewModels.Admin
                 if (RoleListViewModel.SelectedRole != null)
                 {
                     var detailsVM = _factory.CreateRoleDetailsViewModel(RoleListViewModel.SelectedRole, _scope);
+                    detailsVM.ManagePermissionsRequested += () => OnManagePermissionsRequested(detailsVM.Role);
                     detailsVM.RoleDeleted += OnRoleDeleted;
                     DetailViewModel = detailsVM;
                 }
@@ -82,6 +83,22 @@ namespace WpfClient.ViewModels.Admin
                 RoleListViewModel.Roles.Add(createVM.NewlyCreatedRole);
                 RoleListViewModel.SelectedRole = createVM.NewlyCreatedRole;
             }
+        }
+
+        private void OnManagePermissionsRequested(RoleModel role)
+        {
+            var manageVM = _factory.CreateManageRolePermissionsViewModel(role, _scope);
+
+            // Wenn "Save" geklickt wird, kehre zur Detailansicht zurück.
+            manageVM.OnSave += (updatedRole) => {
+                DetailViewModel = _factory.CreateRoleDetailsViewModel(updatedRole, _scope);
+            };
+            // Wenn "Cancel" geklickt wird, kehre ebenfalls zur Detailansicht zurück.
+            manageVM.OnCancel += () => {
+                DetailViewModel = _factory.CreateRoleDetailsViewModel(role, _scope);
+            };
+
+            DetailViewModel = manageVM;
         }
 
         // Event-Handler für das Löschen einer Rolle

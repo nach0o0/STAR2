@@ -29,9 +29,11 @@
                                 IsReadOnly="{Binding CanEditRoleDetails, Converter={StaticResource InverseBooleanConverter}}"/>
 
             <ui:TextBlock Text="Permissions" FontWeight="SemiBold" Margin="0,15,0,5"/>
-            <ListView ItemsSource="{Binding Role.Permissions}" MaxHeight="200" Margin="0,0,0,10"/>
+            <Border BorderBrush="#FFD1D1D1" BorderThickness="1" MaxHeight="200" Margin="0,0,0,10" CornerRadius="4">
+                <ui:ListView ItemsSource="{Binding Role.Permissions}"/>
+            </Border>
 
-            <ui:Button Content="Manage Permissions..."
+            <ui:Button Content="Manage Permissions"
                        HorizontalAlignment="Left"
                        Command="{Binding ManagePermissionsCommand}"
                        IsEnabled="{Binding CanManageRolePermissions}"/>

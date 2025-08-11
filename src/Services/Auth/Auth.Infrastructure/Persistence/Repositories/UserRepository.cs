@@ -37,5 +37,12 @@ namespace Auth.Infrastructure.Persistence.Repositories
         {
             _dbContext.Users.Remove(user);
         }
+
+        public async Task<List<User>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users
+                .Where(u => ids.Contains(u.Id))
+                .ToListAsync(cancellationToken);
+        }
     }
 }

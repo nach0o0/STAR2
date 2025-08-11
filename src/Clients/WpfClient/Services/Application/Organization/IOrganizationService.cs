@@ -11,5 +11,7 @@ namespace WpfClient.Services.Application.Organization
     {
         Task<bool> CreateOrganizationAsync(string name, string abbreviation);
         Task<List<EmployeeModel>> GetEmployeesForMyOrganizationAsync();
+        Task<List<EmployeeModel>> GetEmployeesByEmployeeGroupAsync(Guid employeeGroupId);
+        Task<List<OrganizationModel>> GetRelevantOrganizationsAsync();
     }
 }

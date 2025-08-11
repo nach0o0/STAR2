@@ -14,5 +14,6 @@ namespace Auth.Application.Interfaces.Persistence
         Task<bool> UserExistsWithEmailAsync(string email, CancellationToken cancellationToken = default);
         Task AddAsync(User user, CancellationToken cancellationToken = default); 
         void Delete(User user);
+        Task<List<User>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default);
     }
 }

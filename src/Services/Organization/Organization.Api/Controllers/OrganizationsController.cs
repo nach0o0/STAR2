@@ -6,6 +6,7 @@ using Organization.Application.Features.Commands.DeleteOrganization;
 using Organization.Application.Features.Commands.ReassignOrganizationParent;
 using Organization.Application.Features.Commands.UpdateOrganization;
 using Organization.Application.Features.Queries.GetEmployeesByOrganization;
+using Organization.Application.Features.Queries.GetRelevantOrganizationsForUser;
 using Organization.Contracts.Requests;
 using Organization.Contracts.Responses;
 using Organization.Domain.Authorization;
@@ -86,6 +87,17 @@ namespace Organization.Api.Controllers
                 e.UserId,
                 organizationId
             ));
+
+            return Ok(response);
+        }
+
+        [HttpGet("relevant")]
+        public async Task<IActionResult> GetRelevantOrganizations()
+        {
+            var query = new GetRelevantOrganizationsForUserQuery();
+            var result = await _sender.Send(query);
+
+            var response = result.Select(r => new RelevantOrganizationResponse(r.Id, r.Name, r.IsPrimary));
 
             return Ok(response);
         }

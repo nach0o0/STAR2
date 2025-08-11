@@ -18,14 +18,14 @@ namespace Shared.Clients
             _httpClient = httpClient;
         }
 
-        public async Task<(Guid UserId, string Email)?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
+        public async Task<(Guid UserId, string Email, string? FirstName, string? LastName)?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
-            var responseDto = await _httpClient.GetFromJsonAsync<UserResponse>($"api/internal/users/by-email?email={email}", cancellationToken);
+            var responseDto = await _httpClient.GetFromJsonAsync<UserDetailsResponse>($"api/internal/users/by-email?email={email}", cancellationToken);
             if (responseDto is null)
             {
                 return null;
             }
-            return (responseDto.UserId, responseDto.Email);
+            return (responseDto.UserId, responseDto.Email, responseDto.FirstName, responseDto.LastName);
         }
 
         public async Task<(Guid UserId, string Email)?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)

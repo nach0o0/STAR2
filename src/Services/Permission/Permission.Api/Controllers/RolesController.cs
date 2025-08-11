@@ -84,6 +84,7 @@ namespace Permission.Api.Controllers
                 r.Id,
                 r.Name,
                 r.Description,
+                r.Scope,
                 r.Permissions
             )).ToList();
 

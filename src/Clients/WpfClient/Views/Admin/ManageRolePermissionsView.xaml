@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="WpfClient.Views.Admin.ManageRolePermissionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:local="clr-namespace:WpfClient.Views.Admin"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <StackPanel>
+        <ui:TextBlock FontSize="18" FontWeight="SemiBold">
+            <Run Text="Manage Permissions for Role:"/>
+            <Run Text="{Binding RoleName, Mode=OneWay}" FontWeight="Bold"/>
+        </ui:TextBlock>
+
+        <TextBlock Text="Select the permissions this role should have:" Margin="0,15,0,5"/>
+        <Border BorderBrush="Gray" BorderThickness="1" Height="250">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding AvailablePermissions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Permission.Id}" Margin="5"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+            <ui:Button Content="Save" Command="{Binding SaveCommand}"/>
+            <ui:Button Content="Cancel" Command="{Binding CancelCommand}" Appearance="Secondary" Margin="10,0,0,0"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

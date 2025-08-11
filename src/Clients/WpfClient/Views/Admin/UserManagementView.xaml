@@ -3,15 +3,41 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:local="clr-namespace:WpfClient.Views.Admin"
              xmlns:converters="clr-namespace:WpfClient.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    
+
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" MinWidth="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentControl Grid.Column="0" 
+                        Content="{Binding UserListViewModel}"/>
+
+        <Grid Grid.Column="1" Margin="20,10">
+            <ContentControl Content="{Binding DetailViewModel}"/>
+
+            <ui:TextBlock Text="Select a user to manage their permissions." 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" 
+                       FontSize="16" Foreground="Gray">
+                <ui:TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DetailViewModel}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:TextBlock.Style>
+            </ui:TextBlock>
+        </Grid>
     </Grid>
 </UserControl>

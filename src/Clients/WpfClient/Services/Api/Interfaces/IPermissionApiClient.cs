@@ -33,6 +33,9 @@ namespace WpfClient.Services.Api.Interfaces
         [Get("/api/permissions")]
         Task<List<PermissionResponse>> GetPermissionsByScopeAsync([Query] string scope);
 
+        [Get("/api/permissions/all")]
+        Task<List<PermissionResponse>> GetAllPermissionsAsync();
+
         [Get("/api/roles/{roleId}/permissions")]
         Task<List<PermissionResponse>> GetPermissionsByRoleAsync(Guid roleId);
 
@@ -42,6 +45,9 @@ namespace WpfClient.Services.Api.Interfaces
 
         [Get("/api/user-permissions/by-scope")]
         Task<AssignmentsByScopeResponse> GetAssignmentsByScopeAsync([Query] string scope);
+
+        [Post("/api/user-permissions/find-user")]
+        Task<FoundUserResponse> FindUserForManagementAsync([Body] FindUserByEmailRequest request);
 
         [Post("/api/user-permissions/roles")]
         Task<AssignRoleToUserResponse> AssignRoleToUserAsync([Body] AssignRoleToUserRequest request);

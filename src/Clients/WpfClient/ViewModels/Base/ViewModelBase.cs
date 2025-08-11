@@ -20,6 +20,8 @@ namespace WpfClient.ViewModels.Base
 
         protected async Task ExecuteCommandAsync(Func<Task> action)
         {
+            var notificationService = App.Services.GetRequiredService<INotificationService>();
+
             IsLoading = true;
             try
             {
@@ -27,23 +29,19 @@ namespace WpfClient.ViewModels.Base
             }
             catch (ApiException ex)
             {
-                var notificationService = App.Services.GetRequiredService<INotificationService>();
                 string errorMessage = await GetErrorMessageFromApiException(ex);
                 notificationService.ShowMessage(errorMessage, StatusMessageType.Error);
             }
             catch (HttpRequestException)
             {
-                var notificationService = App.Services.GetRequiredService<INotificationService>();
                 notificationService.ShowMessage("Could not connect to the server.", StatusMessageType.Error);
             }
             catch (InvalidOperationException ex)
             {
-                var notificationService = App.Services.GetRequiredService<INotificationService>();
                 notificationService.ShowMessage(ex.Message, StatusMessageType.Error);
             }
             catch (Exception ex)
             {
-                var notificationService = App.Services.GetRequiredService<INotificationService>();
                 notificationService.ShowMessage($"An unexpected error occurred: {ex.Message}", StatusMessageType.Error);
             }
             finally
@@ -54,22 +52,20 @@ namespace WpfClient.ViewModels.Base
 
         private async Task<string> GetErrorMessageFromApiException(ApiException ex)
         {
-            // Spezieller Fall für Login: 404 bedeutet "nicht gefunden"
-            if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                return "Invalid email or password.";
-            }
-
-            // Versuche, eine detailliertere Validierungsfehlermeldung vom Server zu lesen
             var validationErrors = await ex.GetContentAsAsync<ValidationProblemDetails>();
             if (validationErrors?.Errors != null && validationErrors.Errors.Any())
             {
-                // Gib die erste konkrete Fehlermeldung zurück
                 return validationErrors.Errors.First().Value.First();
             }
 
-            // Fallback für alle anderen API-Fehler
-            return $"An API error occurred: {ex.StatusCode}";
+            // Spezifische, verständliche Nachrichten für häufige Statuscodes.
+            return ex.StatusCode switch
+            {
+                System.Net.HttpStatusCode.NotFound => "The requested resource was not found.",
+                System.Net.HttpStatusCode.Forbidden => "You are not authorized to perform this action.",
+                System.Net.HttpStatusCode.Unauthorized => "Authentication failed. Please log in again.",
+                _ => $"An API error occurred: {ex.StatusCode}" // Fallback
+            };
         }
     }
 }

@@ -37,16 +37,18 @@ namespace WpfClient.ViewModels.Shell
 
             var adminPermissions = new[]
             {
+                PermissionKeys.PermissionRead,
+                PermissionKeys.RoleRead,
                 PermissionKeys.RoleCreate,
                 PermissionKeys.RoleUpdate,
                 PermissionKeys.RoleDelete,
+                PermissionKeys.AssignmentRead,
                 PermissionKeys.RoleAssignPermission,
                 PermissionKeys.PermissionAssignRole,
                 PermissionKeys.PermissionAssignDirect,
                 PermissionKeys.PrivilegedResetPassword
             };
-            CanAccessSystemAdministration = adminPermissions.Any(permission =>
-                _permissionService.HasPermissionInScope(permission, "global"));
+            CanAccessSystemAdministration = _permissionService.HasAnyPermissionInScope(adminPermissions, "global");
         }
 
         [RelayCommand]

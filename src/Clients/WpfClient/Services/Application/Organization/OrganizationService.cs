@@ -71,5 +71,27 @@ namespace WpfClient.Services.Application.Organization
 
             return employeeModels;
         }
+
+        public async Task<List<EmployeeModel>> GetEmployeesByEmployeeGroupAsync(Guid employeeGroupId)
+        {
+            var employeeDtos = await _organizationApiClient.GetEmployeesByEmployeeGroupAsync(employeeGroupId);
+            return employeeDtos.Select(dto => new EmployeeModel
+            {
+                Id = dto.Id,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName
+            }).ToList();
+        }
+
+        public async Task<List<OrganizationModel>> GetRelevantOrganizationsAsync()
+        {
+            var dtos = await _organizationApiClient.GetRelevantOrganizationsAsync();
+            return dtos.Select(dto => new OrganizationModel
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                IsPrimary = dto.IsPrimary
+            }).ToList();
+        }
     }
 }

@@ -68,5 +68,19 @@ namespace Organization.Infrastructure.Persistence.Repositories
             return await _dbContext.Employees
                 .FirstOrDefaultAsync(e => e.UserId == userId, cancellationToken);
         }
+
+        public async Task<List<Employee>> GetByUserIdsAsync(List<Guid> userIds, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Employees
+                .Where(e => e.UserId.HasValue && userIds.Contains(e.UserId.Value))
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Employee>> GetByEmployeeGroupIdAsync(Guid employeeGroupId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Employees
+                .Where(e => e.EmployeeGroupLinks.Any(l => l.EmployeeGroupId == employeeGroupId))
+                .ToListAsync(cancellationToken);
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Permission.Application.Features.Queries.GetRolesByScope
 {
@@ -26,6 +27,7 @@ namespace Permission.Application.Features.Queries.GetRolesByScope
                     r.Id,
                     r.Name,
                     r.Description,
+                    r.Scope,
                     r.Permissions.Select(p => p.PermissionId).ToList()
                 ))
                 .ToList();

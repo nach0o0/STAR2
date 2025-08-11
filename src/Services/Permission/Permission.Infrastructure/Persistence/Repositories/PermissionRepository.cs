@@ -19,7 +19,9 @@ namespace Permission.Infrastructure.Persistence.Repositories
 
         public async Task<Domain.Entities.Permission?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Permissions.FindAsync(new object[] { id }, cancellationToken);
+            return await _dbContext.Permissions
+                .Include(p => p.PermittedScopeTypes)
+                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         }
 
         public async Task AddRangeAsync(IEnumerable<Domain.Entities.Permission> permissions, CancellationToken cancellationToken = default)
@@ -42,6 +44,13 @@ namespace Permission.Infrastructure.Persistence.Repositories
             return await _dbContext.Permissions
                 .Include(p => p.PermittedScopeTypes)
                 .Where(p => p.PermittedScopeTypes.Any(st => st.ScopeType == scopeType))
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Domain.Entities.Permission>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Permissions
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }
     }

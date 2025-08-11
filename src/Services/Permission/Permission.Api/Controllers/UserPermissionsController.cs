@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Permission.Application.Features.Commands.AssignDirectPermissionToUser;
 using Permission.Application.Features.Commands.AssignRoleToUser;
+using Permission.Application.Features.Commands.FindUserByEmail;
 using Permission.Application.Features.Commands.RemoveDirectPermissionFromUser;
 using Permission.Application.Features.Commands.RemoveRoleFromUser;
 using Permission.Application.Features.Queries.GetAssignmentsByScope;
@@ -104,6 +105,18 @@ namespace Permission.Api.Controllers
                     ua.DirectPermissions.Select(p => new DirectPermissionResponse(p.PermissionId, p.Description)).ToList()
                 )).ToList()
             );
+
+            return Ok(response);
+        }
+
+        [HttpPost("find-user")]
+        [Authorize]
+        public async Task<IActionResult> FindUserForManagement(FindUserByEmailRequest request)
+        {
+            var command = new FindUserByEmailCommand(request.Email, request.Scope);
+            var result = await _sender.Send(command);
+
+            var response = new FoundUserResponse(result.UserId, result.Email, result.FirstName, result.LastName);
 
             return Ok(response);
         }

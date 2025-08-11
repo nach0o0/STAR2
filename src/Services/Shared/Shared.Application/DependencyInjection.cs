@@ -12,9 +12,10 @@ namespace Shared.Application
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddMediatrPipelineBehaviors(this IServiceCollection services)
+        public static IServiceCollection AddSharedApplicationServices(this IServiceCollection services, Assembly applicationAssembly)
         {
-            // Registriert die Pipeline-Behaviors in der korrekten Ausführungsreihenfolge
+            // Registriere MediatR und alle Handler aus dem spezifischen Anwendungs-Projekt
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(applicationAssembly));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkBehavior<,>));

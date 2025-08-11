@@ -20,10 +20,10 @@ namespace Permission.Application.Features.Commands.AddPermissionToRole
                 {
                     var role = await roleRepository.GetByIdAsync(command.RoleId, cancellation);
                     var permission = await permissionRepository.GetByIdAsync(command.PermissionId, cancellation);
-                    if (role is null || permission is null) return true; // Wird im Handler abgefangen.
+                    if (role == null || permission == null) return false;
 
                     // Wenn die Rolle global ist, kann jede Permission hinzugefügt werden.
-                    if (role.Scope is null) return true;
+                    if (role.Scope == null) return true;
 
                     // Wenn die Rolle gescoped ist, muss der Scope der Permission passen.
                     var roleScopeType = role.Scope.Split(':')[0];

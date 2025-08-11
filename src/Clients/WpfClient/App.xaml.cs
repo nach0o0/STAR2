@@ -10,8 +10,10 @@ using WpfClient.Services.Application.MyEmployeeProfile;
 using WpfClient.Services.Application.Navigation;
 using WpfClient.Services.Application.Notification;
 using WpfClient.Services.Application.Organization;
+using WpfClient.Services.Application.OrganizationAdmin;
 using WpfClient.Services.Application.Permission;
 using WpfClient.Services.Application.PermissionAdmin;
+using WpfClient.Services.Application.UserAdmin;
 using WpfClient.Services.Application.UserState;
 using WpfClient.ViewModels;
 using WpfClient.ViewModels.Admin;
@@ -61,11 +63,18 @@ namespace WpfClient
             services.AddTransient<RoleManagementViewModel>();
             services.AddTransient<RoleListViewModel>();
             services.AddTransient<CreateRoleViewModel>();
+            services.AddTransient<ManageRolePermissionsViewModel>();
             services.AddTransient<UserManagementViewModel>();
+            services.AddTransient<UserListViewModel>();
+            services.AddTransient<UserAssignmentsViewModel>();
+            services.AddTransient<AssignRoleDialogViewModel>();
+            services.AddTransient<ManageDirectPermissionsViewModel>();
 
 
             services.AddTransient<OrganizationWorkspaceViewModel>();
             services.AddTransient<CreateOrganizationViewModel>();
+            services.AddTransient<OrganizationListViewModel>();
+            services.AddTransient<OrganizationDetailsViewModel>();
 
             services.AddTransient<HomeViewModel>();
             services.AddTransient<TimeTrackingViewModel>();
@@ -83,7 +92,9 @@ namespace WpfClient
             // Reine "Action" Services (Singleton, da sie selbst keinen Zustand halten)
             services.AddSingleton<IPermissionService, PermissionService>();
             services.AddSingleton<IPermissionAdminService, PermissionAdminService>();
+            services.AddSingleton<IUserAdminService, UserAdminService>();
             services.AddSingleton<IOrganizationService, OrganizationService>();
+            services.AddSingleton<IOrganizationAdminService, OrganizationAdminService>();
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<IMyEmployeeProfileService, MyEmployeeProfileService>();
 
@@ -95,6 +106,7 @@ namespace WpfClient
             // --- API Clients & Infrastruktur ---
 
             // HTTP Middleware für Authentifizierung
+            services.AddTransient<LoggingDelegatingHandler>();
             services.AddTransient<AuthDelegatingHandler>();
 
             // Refit API Clients

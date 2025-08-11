@@ -18,7 +18,8 @@ namespace WpfClient.Services.Api.Extensions
 
             services.AddRefitClient<T>()
                 .ConfigureHttpClient(configureClient)
-                .AddHttpMessageHandler<AuthDelegatingHandler>();
+                .AddHttpMessageHandler<AuthDelegatingHandler>()
+                .AddHttpMessageHandler<LoggingDelegatingHandler>();
             return services;
         }
     }

@@ -6,5 +6,10 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Features.Queries.GetUserByEmail
 {
-    public record GetUserByEmailQueryResult(Guid UserId, string Email);
+    public record GetUserByEmailQueryResult(
+        Guid UserId,
+        string Email,
+        string? FirstName,
+        string? LastName
+    );
 }

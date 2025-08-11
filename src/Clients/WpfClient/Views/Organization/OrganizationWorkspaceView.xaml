@@ -8,40 +8,120 @@
              xmlns:converters="clr-namespace:WpfClient.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </UserControl.Resources>
+    
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="30">
-            <ui:TextBlock Text="Organization Management" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
+        <ui:TextBlock Grid.Row="0" Text="Organization Management" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
-            <ContentControl 
-                Content="{Binding CreateOrganizationViewModel}"
-                Visibility="{Binding CanCreateOrganization, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280" MinWidth="220"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <Separator Margin="0,20" 
-                       Visibility="{Binding CanCreateOrganization, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <ContentControl Grid.Column="0" 
+                            Content="{Binding OrganizationListViewModel}"/>
 
-            <GroupBox Header="Employees in my Organization" Padding="15">
-                <StackPanel>
-                    <ui:Button Content="Load Employees" 
-                            Command="{Binding LoadEmployeesCommand}" 
-                            HorizontalAlignment="Left" 
-                            Margin="0,0,0,15"/>
+            <!--<Border Grid.Column="0" Padding="10" Background="#F8F9FA" BorderBrush="#DEE2E6" BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Margin="5">
+                        <ui:TextBlock Text="My Organizations" FontSize="18" FontWeight="SemiBold"/>
+                        <ui:Button Content="Create new organization" 
+                                 Margin="0,10,0,0"
+                                 Command="{Binding ShowCreateOrganizationFormCommand}"
+                                 Visibility="{Binding CanCreateTopLevelOrganization, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                    <ui:ListView Grid.Row="1" ItemsSource="{Binding Organizations}" 
+                              SelectedItem="{Binding SelectedOrganization, Mode=TwoWay}"
+                              Margin="0,10,0,0" BorderThickness="0" Background="Transparent"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                    <ui:ListView ItemsSource="{Binding Employees}" MaxHeight="400">
-                        <ui:ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="First Name" DisplayMemberBinding="{Binding FirstName}" Width="200"/>
-                                <GridViewColumn Header="Last Name" DisplayMemberBinding="{Binding LastName}" Width="200"/>
-                            </GridView>
-                        </ui:ListView.View>
+                        <ui:ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="5"/>
+                                <Setter Property="FontWeight" Value="Normal"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsPrimary}" Value="True">
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:ListView.ItemContainerStyle>
+
+                        <ui:ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ui:TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ui:ListView.ItemTemplate>
                     </ui:ListView>
-                </StackPanel>
-            </GroupBox>
+                </Grid>
+            </Border>-->
 
-        </StackPanel>
-    </ScrollViewer>
+            <Grid Grid.Column="1" Margin="20,0,0,0">
+                <ContentControl Content="{Binding DetailViewModel}"/>
+
+                <ui:TextBlock Text="Select an organization or create a new one." 
+                   VerticalAlignment="Center" HorizontalAlignment="Center" 
+                   FontSize="16" Foreground="Gray">
+                    <ui:TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DetailViewModel}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:TextBlock.Style>
+                </ui:TextBlock>
+            </Grid>
+
+            <!--<TabControl Grid.Column="1">
+
+                --><!--<TabItem Header="Overview">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="10">
+                        <StackPanel>
+                            <ContentControl 
+                            Content="{Binding CreateOrganizationViewModel}"
+                            Visibility="{Binding CanCreateTopLevelOrganization, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                            <ui:TextBlock Text="List of organizations will be displayed here." Margin="0,20,0,0"/>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>--><!--
+                <TabItem Header="Employees">
+                    <TextBlock Text="Employee list for the selected organization will be here." Margin="10"/>
+                </TabItem>
+
+                <TabItem Header="Role Management"
+                     Visibility="{Binding CanManageRoles, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ContentControl Content="{Binding RoleManagementViewModel}"/>
+                </TabItem>
+
+                <TabItem Header="User Management"
+                     Visibility="{Binding CanManageUsers, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ContentControl Content="{Binding UserManagementViewModel}"/>
+                </TabItem>
+
+            </TabControl>
+
+            <ui:TextBlock Grid.Column="1" Text="Select an organization to manage." 
+                       VerticalAlignment="Center" HorizontalAlignment="Center" 
+                       FontSize="16" Foreground="Gray"
+                       Visibility="{Binding IsOrganizationSelected, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>-->
+        </Grid>
+    </Grid>
 </UserControl>

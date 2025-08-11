@@ -13,17 +13,15 @@ using System.Threading.Tasks;
 namespace Shared.Application.Behaviors
 {
     public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+        where TRequest : IBaseRequest
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IUserContext _userContext;
-        private readonly ILogger<AuthorizationBehavior<TRequest, TResponse>> _logger;
 
-        public AuthorizationBehavior(IServiceProvider serviceProvider, IUserContext userContext, ILogger<AuthorizationBehavior<TRequest, TResponse>> logger)
+        public AuthorizationBehavior(IServiceProvider serviceProvider, IUserContext userContext)
         {
             _serviceProvider = serviceProvider;
             _userContext = userContext;
-            _logger = logger;
         }
 
         public async Task<TResponse> Handle(
@@ -31,7 +29,6 @@ namespace Shared.Application.Behaviors
             RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation("[BEHAVIOR] Authorization START for {RequestType}", typeof(TRequest).Name);
             // Finde den spezifischen Authorizer-Typ für den aktuellen Command.
             var authorizerType = typeof(ICommandAuthorizer<>).MakeGenericType(request.GetType());
 
@@ -47,14 +44,11 @@ namespace Shared.Application.Behaviors
                 // (Also bei einem API-Aufruf)
                 if (currentUser is not null)
                 {
-                    _logger.LogInformation("[BEHAVIOR] Running authorizer {AuthorizerType} for {RequestType}",
-                        authorizerType.Name, typeof(TRequest).Name);
                     await ((dynamic)authorizer).AuthorizeAsync((dynamic)request, currentUser, cancellationToken);
                 }
                 // Wenn currentUser null ist (Aufruf aus einem Event Handler), wird die Prüfung
                 // einfach übersprungen, da es ein vertrauenswürdiger Systemaufruf ist.
             }
-            _logger.LogInformation("[BEHAVIOR] Authorization END for {RequestType}", typeof(TRequest).Name);
 
             return await next();
         }
