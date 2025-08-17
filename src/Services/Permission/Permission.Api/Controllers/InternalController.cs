@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Permission.Application.Features.Commands.RegisterPermissions;
+using Permission.Application.Features.Queries.GetAllScopesForUser;
 using Permission.Application.Features.Queries.GetPermissionsForUser;
 using Permission.Contracts.Requests;
 using Permission.Contracts.Responses;
@@ -37,6 +38,15 @@ namespace Permission.Api.Controllers
 
             await _sender.Send(command);
             return NoContent();
+        }
+
+        [HttpGet("user-scopes/{userId:guid}")]
+        public async Task<IActionResult> GetAllScopesForUser(Guid userId)
+        {
+            var query = new GetAllScopesForUserQuery(userId);
+            var result = await _sender.Send(query);
+            // Wir geben die Liste der Strings direkt zurück, kein DTO nötig.
+            return Ok(result);
         }
     }
 }

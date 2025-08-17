@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Organization.Contracts.Requests;
+﻿using Organization.Contracts.Requests;
 using Organization.Contracts.Responses;
 using Shared.Application.Interfaces.Infrastructure;
 using System.Net;
@@ -10,12 +9,10 @@ namespace Shared.Clients
     public class OrganizationServiceClient : IOrganizationServiceClient
     {
         private readonly HttpClient _httpClient;
-        private readonly ILogger<OrganizationServiceClient> _logger;
 
-        public OrganizationServiceClient(HttpClient httpClient, ILogger<OrganizationServiceClient> logger)
+        public OrganizationServiceClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _logger = logger;
         }
 
         public async Task<(Guid EmployeeId, Guid? OrganizationId, List<Guid> EmployeeGroupIds)?> GetEmployeeInfoByUserIdAsync(

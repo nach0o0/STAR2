@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
 using Organization.Domain.Entities;
 using Shared.Application.Interfaces.Persistence;
 using Shared.Domain.Abstractions;

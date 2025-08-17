@@ -1,15 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Permission.Application.Interfaces.Persistence;
+﻿using Permission.Application.Interfaces.Persistence;
 using Permission.Domain.Authorization;
 using Permission.Domain.Entities;
 using Shared.Application.Interfaces.Security;
 using Shared.Application.Security;
 using Shared.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Permission.Application.Features.Commands.DeleteRole
 {

@@ -37,16 +37,23 @@ namespace Organization.Application.Features.Queries.GetRelevantOrganizationsForU
                 orgIdsFromScopes.Add(currentUser.OrganizationId.Value);
             }
 
+            if (!orgIdsFromScopes.Any())
+            {
+                return new List<GetRelevantOrganizationsForUserQueryResult>();
+            }
+
             // 3. Entferne Duplikate und hole alle relevanten Organisationen aus der DB.
-            var distinctOrgIds = orgIdsFromScopes.Distinct();
+            var distinctOrgIds = orgIdsFromScopes.Distinct().ToList();
             var organizations = await _organizationRepository.GetByIdsAsync(distinctOrgIds, ct);
 
             // 4. Wandle das Ergebnis um und setze das `IsPrimary`-Flag.
-            return organizations.Select(org => new GetRelevantOrganizationsForUserQueryResult(
+            var result = organizations.Select(org => new GetRelevantOrganizationsForUserQueryResult(
                 org.Id,
                 org.Name,
                 org.Id == currentUser.OrganizationId
             )).ToList();
+
+            return result;
         }
     }
 }

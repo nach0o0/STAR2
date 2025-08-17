@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Shared.Application.Interfaces.Security;
 using Shared.Domain.Exceptions;
 using System;

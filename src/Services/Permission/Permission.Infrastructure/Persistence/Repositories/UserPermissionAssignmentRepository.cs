@@ -124,5 +124,14 @@ namespace Permission.Infrastructure.Persistence.Repositories
                 .Where(a => a.Scope == scope)
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<List<string>> GetScopesForUserAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.UserPermissionAssignments
+                .Where(a => a.UserId == userId)
+                .Select(a => a.Scope)
+                .Distinct()
+                .ToListAsync(cancellationToken);
+        }
     }
 }

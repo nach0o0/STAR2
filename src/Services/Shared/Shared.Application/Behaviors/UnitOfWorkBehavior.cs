@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using Shared.Application.Interfaces.Messaging;
 using Shared.Application.Interfaces.Persistence;
 

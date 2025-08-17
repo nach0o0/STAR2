@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using Permission.Application.Interfaces.Persistence;
 using Permission.Domain.Authorization;
 using Permission.Domain.Entities;

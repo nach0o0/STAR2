@@ -15,7 +15,7 @@
     <Border Padding="10" Background="#F8F9FA" BorderBrush="#DEE2E6" BorderThickness="0,0,1,0">
         <DockPanel>
             <StackPanel DockPanel.Dock="Top" Margin="5">
-                <ui:TextBlock Text="Global Roles" FontSize="18" FontWeight="SemiBold"/>
+                <ui:TextBlock Text="Roles" FontSize="18" FontWeight="SemiBold"/>
                 <ui:Button Content="Create New Role" Margin="0,10"
                             Command="{Binding RequestCreateNewRoleCommand}"
                             Visibility="{Binding CanCreateRoles, Converter={StaticResource BooleanToVisibilityConverter}}"/>

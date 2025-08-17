@@ -22,5 +22,6 @@ namespace Permission.Application.Interfaces.Persistence
         Task<List<UserPermissionAssignment>> GetAssignmentsForRoleAsync(Guid roleId, CancellationToken cancellationToken = default);
         Task<List<Guid>> GetUserIdsByRoleIdAsync(Guid roleId, CancellationToken cancellationToken = default);
         Task<List<UserPermissionAssignment>> GetAssignmentsByScopeAsync(string scope, CancellationToken cancellationToken = default);
+        Task<List<string>> GetScopesForUserAsync(Guid userId, CancellationToken cancellationToken = default); // NEU
     }
 }

@@ -77,9 +77,12 @@ namespace Session.Infrastructure.Services
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
+            var scopesFromPermissions = await _permissionServiceClient.GetScopesForUserAsync(userId, cancellationToken)
+                                        ?? new List<string>();
+
             // 2. Anreicherung mit Organisations-Daten
             var employeeInfo = await _orgServiceClient.GetEmployeeInfoByUserIdAsync(userId, cancellationToken);
-            var scopes = new List<string>();
+            var naturalScopes = new List<string>();
 
             if (employeeInfo is not null)
             {
@@ -87,19 +90,21 @@ namespace Session.Infrastructure.Services
                 if (employeeInfo.Value.OrganizationId.HasValue)
                 {
                     claims.Add(new Claim(CustomClaimTypes.OrganizationId, employeeInfo.Value.OrganizationId.Value.ToString()));
-                    scopes.Add($"{PermittedScopeTypes.Organization}:{employeeInfo.Value.OrganizationId.Value}");
+                    naturalScopes.Add($"{PermittedScopeTypes.Organization}:{employeeInfo.Value.OrganizationId.Value}");
                 }
 
                 foreach (var groupId in employeeInfo.Value.EmployeeGroupIds)
                 {
                     claims.Add(new Claim(CustomClaimTypes.EmployeeGroupId, groupId.ToString()));
-                    scopes.Add($"{PermittedScopeTypes.EmployeeGroup}:{groupId}");
+                    naturalScopes.Add($"{PermittedScopeTypes.EmployeeGroup}:{groupId}");
                 }
             }
 
             // 3. Anreicherung mit Berechtigungs-Daten
-            scopes.Add(PermittedScopeTypes.Global); // Füge immer den globalen Scope hinzu.
-            var permissionsByScope = await _permissionServiceClient.GetPermissionsForUserAsync(userId, scopes, cancellationToken);
+            naturalScopes.Add(PermittedScopeTypes.Global); // Füge immer den globalen Scope hinzu.
+            var allRelevantScopes = scopesFromPermissions.Union(naturalScopes).Distinct().ToList();
+
+            var permissionsByScope = await _permissionServiceClient.GetPermissionsForUserAsync(userId, allRelevantScopes, cancellationToken);
             if (permissionsByScope is not null && permissionsByScope.Any())
             {
                 var permissionsJson = JsonSerializer.Serialize(permissionsByScope);

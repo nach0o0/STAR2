@@ -45,5 +45,18 @@ namespace Shared.Clients
             var responseDto = await response.Content.ReadFromJsonAsync<GetUserPermissionsResponse>(cancellationToken);
             return responseDto?.PermissionsByScope;
         }
+
+        public async Task<List<string>?> GetScopesForUserAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                // Ruft den neuen internen Endpunkt ab, den du im PermissionService erstellt hast.
+                return await _httpClient.GetFromJsonAsync<List<string>>($"api/internal/user-scopes/{userId}", cancellationToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return new List<string>(); // Wenn nichts gefunden wird, gib eine leere Liste zurück.
+            }
+        }
     }
 }

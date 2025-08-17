@@ -12,5 +12,9 @@ namespace Shared.Application.Interfaces.Clients
             Guid userId,
             IEnumerable<string> scopes,
             CancellationToken cancellationToken = default);
+
+        Task<List<string>?> GetScopesForUserAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default);
     }
 }
