@@ -13,14 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Attendance.Contracts\Attendance.Contracts.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.AspNetCore\Shared.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared.Security\Shared.Security.csproj" />
-    <ProjectReference Include="..\Attendance.Infrastructure\Attendance.Infrastructure.csproj" />
+	<ProjectReference Include="..\..\Shared\Shared.Clients\Shared.Clients.csproj" />
+	<ProjectReference Include="..\..\Shared\Shared.Options\Shared.Options.csproj" />
+	<ProjectReference Include="..\..\Shared\Shared.Security\Shared.Security.csproj" />
+	<ProjectReference Include="..\Attendance.Infrastructure\Attendance.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -37,6 +37,19 @@ namespace Shared.Clients
             return (responseDto!.EmployeeId, responseDto.OrganizationId, responseDto.EmployeeGroupIds);
         }
 
+        public async Task<(Guid EmployeeId, Guid? OrganizationId, List<Guid> EmployeeGroupIds)?> GetEmployeeInfoByEmployeeIdAsync(Guid employeeId, CancellationToken cancellationToken = default)
+        {
+            // Annahme: Es gibt einen internen Endpunkt im Organization Service, der diese Abfrage unterstützt.
+            var httpResponse = await _httpClient.GetAsync($"api/internal/employee-info/by-employee/{employeeId}", cancellationToken);
+            if (httpResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            httpResponse.EnsureSuccessStatusCode();
+            var responseDto = await httpResponse.Content.ReadFromJsonAsync<EmployeeInfoResponse>(cancellationToken);
+            return (responseDto!.EmployeeId, responseDto.OrganizationId, responseDto.EmployeeGroupIds);
+        }
+
         public async Task<List<EmployeeDetailsResponse>> GetEmployeesByUserIdsAsync(
             GetEmployeesByUserIdsRequest request,
             CancellationToken cancellationToken = default)
@@ -47,6 +60,15 @@ namespace Shared.Clients
 
             return await response.Content.ReadFromJsonAsync<List<EmployeeDetailsResponse>>(cancellationToken: cancellationToken)
                    ?? new List<EmployeeDetailsResponse>();
+        }
+
+        public async Task<List<EmployeeResponse>> GetEmployeesByEmployeeGroupAsync(Guid employeeGroupId, CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.GetAsync($"api/employee-groups/{employeeGroupId}/employees", cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<List<EmployeeResponse>>(cancellationToken: cancellationToken)
+                   ?? new List<EmployeeResponse>();
         }
     }
 }

@@ -15,5 +15,7 @@ namespace Organization.Application.Interfaces.Persistence
         Task<bool> NameExistsAsync(string name, Guid? parentOrganizationId = null, CancellationToken cancellationToken = default);
         Task<bool> IsDefaultGroupOfAnyOrganizationAsync(Guid employeeGroupId, CancellationToken cancellationToken = default);
         Task<List<Domain.Entities.Organization>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
+        Task<List<Domain.Entities.Organization>> GetTopLevelOrganizationsAsync(CancellationToken cancellationToken = default);
+        Task<Domain.Entities.Organization?> GetOrganizationHierarchyAsync(Guid organizationId, CancellationToken cancellationToken = default);
     }
 }

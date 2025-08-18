@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Organization.Application.Features.Queries.GetEmployeeInfoByEmployeeId;
 using Organization.Application.Features.Queries.GetEmployeeInfoByUserId;
 using Organization.Application.Features.Queries.GetEmployeesByUserIds;
 using Organization.Contracts.Requests;
@@ -46,6 +47,25 @@ namespace Organization.Api.Controllers
             var response = result.Select(e => new EmployeeDetailsResponse(
                 e.UserId, e.EmployeeId, e.FirstName, e.LastName
             )).ToList();
+
+            return Ok(response);
+        }
+
+        [HttpGet("employee-info/by-employee/{employeeId:guid}")]
+        public async Task<IActionResult> GetEmployeeInfoByEmployeeId(Guid employeeId)
+        {
+            var query = new GetEmployeeInfoByEmployeeIdQuery(employeeId);
+            var queryResult = await _sender.Send(query);
+
+            if (queryResult is null)
+            {
+                return NotFound();
+            }
+
+            var response = new EmployeeInfoResponse(
+                queryResult.EmployeeId,
+                queryResult.OrganizationId,
+                queryResult.EmployeeGroupIds);
 
             return Ok(response);
         }

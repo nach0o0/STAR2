@@ -40,5 +40,28 @@ namespace Organization.Infrastructure.Persistence.Repositories
         {
             _dbContext.Invitations.Remove(invitation);
         }
+
+        public async Task<List<Invitation>> GetByTargetEntityAsync(InvitationTargetEntityType targetType, Guid targetId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Invitations
+                .Where(i => i.TargetEntityType == targetType &&
+                             i.TargetEntityId == targetId &&
+                             i.Status == InvitationStatus.Pending)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Invitation>> GetForInviteeAsync(Guid inviteeEmployeeId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Invitations
+                .Where(i => i.InviteeEmployeeId == inviteeEmployeeId && i.Status == InvitationStatus.Pending)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Invitation>> GetSentByInviterAsync(Guid inviterEmployeeId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Invitations
+                .Where(i => i.InviterEmployeeId == inviterEmployeeId)
+                .ToListAsync(cancellationToken);
+        }
     }
 }

@@ -9,8 +9,14 @@ namespace Shared.Application.Interfaces.Infrastructure
             Guid userId,
             CancellationToken cancellationToken = default);
 
+        Task<(Guid EmployeeId, Guid? OrganizationId, List<Guid> EmployeeGroupIds)?> GetEmployeeInfoByEmployeeIdAsync(
+            Guid employeeId,
+            CancellationToken cancellationToken = default);
+
         Task<List<EmployeeDetailsResponse>> GetEmployeesByUserIdsAsync(
             GetEmployeesByUserIdsRequest request,
             CancellationToken cancellationToken = default);
+
+        Task<List<EmployeeResponse>> GetEmployeesByEmployeeGroupAsync(Guid employeeGroupId, CancellationToken cancellationToken = default);
     }
 }

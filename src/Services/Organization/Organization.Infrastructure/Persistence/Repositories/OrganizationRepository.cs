@@ -55,5 +55,42 @@ namespace Organization.Infrastructure.Persistence.Repositories
                 .Where(o => ids.Contains(o.Id))
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<List<Domain.Entities.Organization>> GetTopLevelOrganizationsAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Organizations
+                .Where(o => o.ParentOrganizationId == null)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<Domain.Entities.Organization?> GetOrganizationHierarchyAsync(Guid organizationId, CancellationToken cancellationToken = default)
+        {
+            var root = await _dbContext.Organizations.FindAsync(new object[] { organizationId }, cancellationToken);
+            if (root is null)
+            {
+                return null;
+            }
+
+            await LoadSubOrganizationsRecursiveAsync(root, cancellationToken);
+            return root;
+        }
+
+
+
+
+
+        // Private Hilfsmethoden
+        private async Task LoadSubOrganizationsRecursiveAsync(Domain.Entities.Organization organization, CancellationToken cancellationToken)
+        {
+            var children = await _dbContext.Organizations
+                .Where(o => o.ParentOrganizationId == organization.Id)
+                .ToListAsync(cancellationToken);
+
+            foreach (var child in children)
+            {
+                // Rekursiver Aufruf für jedes Kind
+                await LoadSubOrganizationsRecursiveAsync(child, cancellationToken);
+            }
+        }
     }
 }

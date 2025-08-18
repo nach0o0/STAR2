@@ -5,6 +5,8 @@ using Organization.Application.Features.Commands.AssignHourlyRateToEmployee;
 using Organization.Application.Features.Commands.CreateMyEmployeeProfile;
 using Organization.Application.Features.Commands.RemoveEmployeeFromOrganization;
 using Organization.Application.Features.Commands.UpdateMyEmployeeProfile;
+using Organization.Application.Features.Queries.GetEmployeeById;
+using Organization.Application.Features.Queries.GetEmployeeGroupsForEmployee;
 using Organization.Application.Features.Queries.GetMyEmployeeProfile;
 using Organization.Contracts.Requests;
 using Organization.Contracts.Responses;
@@ -76,6 +78,42 @@ namespace Organization.Api.Controllers
             var command = new RemoveEmployeeFromOrganizationCommand(employeeId);
             await _sender.Send(command);
             return NoContent();
+        }
+
+        [HttpGet("{employeeId:guid}")]
+        public async Task<IActionResult> GetById(Guid employeeId)
+        {
+            var query = new GetEmployeeByIdQuery(employeeId);
+            var result = await _sender.Send(query);
+
+            if (result is null)
+            {
+                return NotFound();
+            }
+
+            var response = new EmployeeResponse(
+                result.Id,
+                result.FirstName,
+                result.LastName,
+                result.UserId,
+                result.OrganizationId
+            );
+
+            return Ok(response);
+        }
+
+        [HttpGet("{employeeId:guid}/employee-groups")]
+        public async Task<IActionResult> GetEmployeeGroups(Guid employeeId)
+        {
+            var query = new GetEmployeeGroupsForEmployeeQuery(employeeId);
+            var result = await _sender.Send(query);
+
+            var response = result.Select(eg => new EmployeeGroupMembershipResponse(
+                eg.EmployeeGroupId,
+                eg.Name
+            ));
+
+            return Ok(response);
         }
     }
 }

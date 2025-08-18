@@ -5,8 +5,13 @@ using Organization.Application.Features.Commands.CreateOrganization;
 using Organization.Application.Features.Commands.DeleteOrganization;
 using Organization.Application.Features.Commands.ReassignOrganizationParent;
 using Organization.Application.Features.Commands.UpdateOrganization;
+using Organization.Application.Features.Queries.GetEmployeeGroupsByOrganization;
 using Organization.Application.Features.Queries.GetEmployeesByOrganization;
+using Organization.Application.Features.Queries.GetOrganizationById;
+using Organization.Application.Features.Queries.GetOrganizationHierarchy;
 using Organization.Application.Features.Queries.GetRelevantOrganizationsForUser;
+using Organization.Application.Features.Queries.GetSubOrganizations;
+using Organization.Application.Features.Queries.GetTopLevelOrganizations;
 using Organization.Contracts.Requests;
 using Organization.Contracts.Responses;
 using Organization.Domain.Authorization;
@@ -100,6 +105,108 @@ namespace Organization.Api.Controllers
             var response = result.Select(r => new RelevantOrganizationResponse(r.Id, r.Name, r.IsPrimary));
 
             return Ok(response);
+        }
+
+        [HttpGet("{organizationId:guid}")]
+        public async Task<IActionResult> GetById(Guid organizationId)
+        {
+            var query = new GetOrganizationByIdQuery(organizationId);
+            var result = await _sender.Send(query);
+
+            if (result is null)
+            {
+                return NotFound();
+            }
+
+            var response = new OrganizationDetailsResponse(
+                result.Id,
+                result.Name,
+                result.Abbreviation,
+                result.ParentOrganizationId,
+                result.DefaultEmployeeGroupId
+            );
+
+            return Ok(response);
+        }
+
+        [HttpGet("{organizationId:guid}/sub-organizations")]
+        [Authorize(Policy = OrganizationPermissions.Read)]
+        public async Task<IActionResult> GetSubOrganizations(Guid organizationId)
+        {
+            var query = new GetSubOrganizationsQuery(organizationId);
+            var result = await _sender.Send(query);
+
+            var response = result.Select(org => new SubOrganizationResponse(
+                org.Id,
+                org.Name,
+                org.Abbreviation
+            ));
+
+            return Ok(response);
+        }
+
+        [HttpGet("{organizationId:guid}/employee-groups")]
+        [Authorize(Policy = EmployeeGroupPermissions.Read)]
+        public async Task<IActionResult> GetEmployeeGroups(Guid organizationId)
+        {
+            var query = new GetEmployeeGroupsByOrganizationQuery(organizationId);
+            var result = await _sender.Send(query);
+
+            // Hier können wir das bestehende EmployeeGroupResponse-DTO wiederverwenden
+            var response = result.Select(eg => new EmployeeGroupResponse(
+                eg.Id,
+                eg.Name,
+                organizationId
+            ));
+
+            return Ok(response);
+        }
+
+        [HttpGet("top-level")]
+        [Authorize(Policy = OrganizationPermissions.Read)]
+        public async Task<IActionResult> GetTopLevel()
+        {
+            var query = new GetTopLevelOrganizationsQuery();
+            var result = await _sender.Send(query);
+
+            // Wir können das SubOrganizationResponse-DTO wiederverwenden.
+            var response = result.Select(org => new SubOrganizationResponse(
+                org.Id,
+                org.Name,
+                org.Abbreviation
+            ));
+
+            return Ok(response);
+        }
+
+        [HttpGet("{organizationId:guid}/hierarchy")]
+        [Authorize(Policy = OrganizationPermissions.Read)]
+        public async Task<IActionResult> GetHierarchy(Guid organizationId)
+        {
+            var query = new GetOrganizationHierarchyQuery(organizationId);
+            var result = await _sender.Send(query);
+
+            if (result is null)
+            {
+                return NotFound();
+            }
+
+            var response = MapToResponse(result);
+            return Ok(response);
+        }
+
+
+
+
+
+        private OrganizationHierarchyNodeResponse MapToResponse(GetOrganizationHierarchyQueryResult result)
+        {
+            return new OrganizationHierarchyNodeResponse(
+                result.Id,
+                result.Name,
+                result.Abbreviation,
+                result.Children.Select(MapToResponse).ToList()
+            );
         }
     }
 }
