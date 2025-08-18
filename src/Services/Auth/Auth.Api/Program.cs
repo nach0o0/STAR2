@@ -80,8 +80,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.UseMiddleware<GatewayIpCheckMiddleware>();
+}
 
-app.UseMiddleware<GatewayIpCheckMiddleware>();
 // Füge die globale Fehlerbehandlungs-Middleware hinzu
 app.UseGlobalExceptionHandler();
 

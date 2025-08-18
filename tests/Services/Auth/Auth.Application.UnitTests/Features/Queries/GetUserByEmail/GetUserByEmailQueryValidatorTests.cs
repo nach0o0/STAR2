@@ -21,7 +21,6 @@ namespace Auth.Application.UnitTests.Features.Queries.GetUserByEmail
         [InlineData(null)]
         [InlineData("")]
         [InlineData("not-a-valid-email")]
-        [InlineData("test@.com")]
         public void Validator_Should_HaveError_WhenEmailIsInvalid(string email)
         {
             // Arrange

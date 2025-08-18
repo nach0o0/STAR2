@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\CostObject.Contracts\CostObject.Contracts.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.AspNetCore\Shared.AspNetCore.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Security\Shared.Security.csproj" />

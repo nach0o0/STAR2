@@ -56,7 +56,7 @@ namespace Auth.Api.Controllers
         }
 
         [HttpPost("by-ids")]
-        public async Task<IActionResult> GetUsersByIds(GetUsersByIdsRequest request)
+        public async Task<IActionResult> GetUsersByIds([FromBody] GetUsersByIdsRequest request)
         {
             var query = new GetUsersByIdsQuery(request.UserIds);
             var queryResult = await _sender.Send(query);

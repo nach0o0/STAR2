@@ -25,13 +25,13 @@ namespace Auth.Application.UnitTests.Features.Commands.RegisterUser
         [InlineData("")]
         [InlineData(" ")]
         [InlineData("not-an-email")]
-        public void Validator_Should_HaveError_WhenEmailIsInvalid(string email)
+        public async Task Validator_Should_HaveError_WhenEmailIsInvalid(string email)
         {
             // Arrange
             var command = new RegisterUserCommand(email, "Password123");
 
-            // Act
-            var result = _validator.TestValidate(command);
+            // --- FIX: Using TestValidateAsync ---
+            var result = await _validator.TestValidateAsync(command);
 
             // Assert
             result.ShouldHaveValidationErrorFor(c => c.Email);
@@ -54,13 +54,13 @@ namespace Auth.Application.UnitTests.Features.Commands.RegisterUser
         }
 
         [Fact]
-        public void Validator_Should_HaveError_WhenPasswordIsTooShort()
+        public async Task Validator_Should_HaveError_WhenPasswordIsTooShort()
         {
             // Arrange
             var command = new RegisterUserCommand("test@example.com", "short");
 
-            // Act
-            var result = _validator.TestValidate(command);
+            // --- FIX: Using TestValidateAsync ---
+            var result = await _validator.TestValidateAsync(command);
 
             // Assert
             result.ShouldHaveValidationErrorFor(c => c.Password);

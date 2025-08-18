@@ -13,6 +13,15 @@ namespace Auth.Domain.Entities
 
         public User(string email, string passwordHash)
         {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentException("Email cannot be null or whitespace.", nameof(email));
+            }
+            if (string.IsNullOrWhiteSpace(passwordHash))
+            {
+                throw new ArgumentException("Password hash cannot be null or whitespace.", nameof(passwordHash));
+            }
+
             Id = Guid.NewGuid();
             Email = email;
             PasswordHash = passwordHash;
