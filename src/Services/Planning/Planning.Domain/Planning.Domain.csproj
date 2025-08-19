@@ -14,4 +14,10 @@
     <ProjectReference Include="..\..\Shared\Shared.Domain\Shared.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Events\" />
+    <Folder Include="Authorization\" />
+  </ItemGroup>
+
 </Project>

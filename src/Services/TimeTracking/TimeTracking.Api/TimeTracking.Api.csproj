@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\TimeTracking.Contracts\TimeTracking.Contracts.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.AspNetCore\Shared.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Clients\Shared.Clients.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Security\Shared.Security.csproj" />
     <ProjectReference Include="..\TimeTracking.Infrastructure\TimeTracking.Infrastructure.csproj" />
   </ItemGroup>

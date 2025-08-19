@@ -1,5 +1,6 @@
 ﻿using CostObject.Application.Interfaces.Persistence;
 using CostObject.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,13 @@ namespace CostObject.Infrastructure.Persistence.Repositories
         public void Delete(Label label)
         {
             _dbContext.Labels.Remove(label);
+        }
+
+        public async Task<List<Label>> GetByGroupIdAsync(Guid employeeGroupId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Labels
+                .Where(co => co.EmployeeGroupId == employeeGroupId)
+                .ToListAsync(cancellationToken);
         }
     }
 }

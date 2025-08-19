@@ -1,5 +1,6 @@
 ﻿using CostObject.Application.Interfaces.Persistence;
 using CostObject.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,20 @@ namespace CostObject.Infrastructure.Persistence.Repositories
         public void Delete(HierarchyDefinition hierarchyDefinition)
         {
             _dbContext.HierarchyDefinitions.Remove(hierarchyDefinition);
+        }
+
+        public async Task<List<HierarchyDefinition>> FindByRequiredBookingLevelIdAsync(Guid hierarchyLevelId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.HierarchyDefinitions
+                .Where(hd => hd.RequiredBookingLevelId == hierarchyLevelId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<HierarchyDefinition>> GetByGroupIdAsync(Guid employeeGroupId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.HierarchyDefinitions
+                .Where(co => co.EmployeeGroupId == employeeGroupId)
+                .ToListAsync(cancellationToken);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using CostObject.Application.Interfaces.Persistence;
+using CostObject.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +31,105 @@ namespace CostObject.Infrastructure.Persistence.Repositories
         public void Delete(Domain.Entities.CostObject costObject)
         {
             _dbContext.CostObjects.Remove(costObject);
+        }
+
+        public async Task<bool> IsHierarchyLevelInUseAsync(Guid hierarchyLevelId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CostObjects.AnyAsync(co => co.HierarchyLevelId == hierarchyLevelId, cancellationToken);
+        }
+
+        public async Task<List<Domain.Entities.CostObject>> GetTopLevelCostObjectsByGroupAsync(Guid employeeGroupId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CostObjects
+                .Where(co => co.EmployeeGroupId == employeeGroupId && co.ParentCostObjectId == null)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Domain.Entities.CostObject>> GetAllDescendantsAsync(Guid parentCostObjectId, CancellationToken cancellationToken = default)
+        {
+            var allCostObjects = await _dbContext.CostObjects.ToListAsync(cancellationToken);
+            var descendants = new List<Domain.Entities.CostObject>();
+            var children = allCostObjects.Where(co => co.ParentCostObjectId == parentCostObjectId).ToList();
+
+            while (children.Any())
+            {
+                descendants.AddRange(children);
+                var childrenIds = children.Select(c => c.Id).ToList();
+                children = allCostObjects.Where(co => co.ParentCostObjectId.HasValue && childrenIds.Contains(co.ParentCostObjectId.Value)).ToList();
+            }
+            return descendants;
+        }
+
+        public async Task<List<Domain.Entities.CostObject>> GetByLabelIdAsync(Guid labelId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CostObjects
+                .Where(co => co.LabelId == labelId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Domain.Entities.CostObject>> GetByGroupIdAsync(Guid employeeGroupId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CostObjects
+                .Where(co => co.EmployeeGroupId == employeeGroupId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Domain.Entities.CostObject>> GetForGroupWithRequestsAsync(Guid employeeGroupId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CostObjects
+                .Where(co => co.EmployeeGroupId == employeeGroupId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Domain.Entities.CostObject>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CostObjects
+                .Where(co => ids.Contains(co.Id))
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Domain.Entities.CostObject>> GetChildrenAsync(Guid parentCostObjectId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CostObjects
+                .Where(co => co.ParentCostObjectId == parentCostObjectId)
+                .OrderBy(co => co.Name)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<bool> HasChildrenAsync(Guid costObjectId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CostObjects.AnyAsync(co => co.ParentCostObjectId == costObjectId, cancellationToken);
+        }
+
+        public async Task<List<Domain.Entities.CostObject>> GetTopLevelByGroupAsync(Guid employeeGroupId, bool approvedOnly, bool activeOnly, CancellationToken cancellationToken = default)
+        {
+            var query = _dbContext.CostObjects
+                .Where(co => co.EmployeeGroupId == employeeGroupId && co.ParentCostObjectId == null);
+
+            if (approvedOnly)
+            {
+                query = query.Where(co => co.ApprovalStatus == ApprovalStatus.Approved);
+            }
+
+            if (activeOnly)
+            {
+                var today = DateTime.UtcNow.Date;
+                query = query.Where(co => co.ValidFrom.Date <= today && (co.ValidTo == null || co.ValidTo.Value.Date >= today));
+            }
+
+            return await query.OrderBy(co => co.Name).ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Domain.Entities.CostObject>> GetActiveAndApprovedByGroupAsync(Guid employeeGroupId, CancellationToken cancellationToken = default)
+        {
+            var today = DateTime.UtcNow.Date;
+            return await _dbContext.CostObjects
+                .Where(co =>
+                    co.EmployeeGroupId == employeeGroupId &&
+                    co.ApprovalStatus == ApprovalStatus.Approved &&
+                    co.ValidFrom.Date <= today &&
+                    (co.ValidTo == null || co.ValidTo.Value.Date >= today))
+                .ToListAsync(cancellationToken);
         }
     }
 }

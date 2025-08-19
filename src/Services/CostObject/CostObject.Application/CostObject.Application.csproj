@@ -18,23 +18,4 @@
     <ProjectReference Include="..\CostObject.Domain\CostObject.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Commands\CreateCostObjectRequest\" />
-    <Folder Include="Features\Commands\ApproveCostObjectRequest\" />
-    <Folder Include="Features\Commands\CreateLabel\" />
-    <Folder Include="Features\Commands\DeleteLabel\" />
-    <Folder Include="Features\Commands\CreateHierarchyDefinition\" />
-    <Folder Include="Features\Commands\DeleteHierarchyDefinition\" />
-    <Folder Include="Features\Commands\CreateHierarchyLevel\" />
-    <Folder Include="Features\Commands\DeleteHierarchyLevel\" />
-    <Folder Include="Features\Commands\SyncTopLevelCostObjects\" />
-    <Folder Include="Features\Commands\UpdateHierarchyLevel\" />
-    <Folder Include="Features\Commands\UpdateHierarchyDefinition\" />
-    <Folder Include="Features\Commands\UpdateLabel\" />
-    <Folder Include="Features\Commands\RejectCostObjectRequest\" />
-    <Folder Include="Features\DomainEventHandlers\" />
-    <Folder Include="Features\IntegrationEventConsumers\" />
-    <Folder Include="Features\Queries\" />
-  </ItemGroup>
-
 </Project>

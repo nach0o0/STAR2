@@ -12,5 +12,6 @@ namespace CostObject.Application.Interfaces.Persistence
         Task<Label?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task AddAsync(Label label, CancellationToken cancellationToken = default);
         void Delete(Label label);
+        Task<List<Label>> GetByGroupIdAsync(Guid employeeGroupId, CancellationToken cancellationToken = default);
     }
 }

@@ -70,6 +70,16 @@ namespace CostObject.Domain.Entities
             }
         }
 
+        public void Approve()
+        {
+            if (ApprovalStatus != ApprovalStatus.Pending)
+            {
+                return;
+            }
+            ApprovalStatus = ApprovalStatus.Approved;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         public void Deactivate(DateTime validToDate)
         {
             if (validToDate.Date < ValidFrom.Date)

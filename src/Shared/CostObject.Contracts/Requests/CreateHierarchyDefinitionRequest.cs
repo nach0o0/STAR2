@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CostObject.Contracts.Requests
+{
+    public record CreateHierarchyDefinitionRequest(
+        string Name,
+        Guid EmployeeGroupId,
+        Guid? RequiredBookingLevelId
+    );
+}

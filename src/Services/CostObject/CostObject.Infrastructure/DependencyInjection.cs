@@ -1,4 +1,5 @@
-﻿using CostObject.Application.Interfaces.Persistence;
+﻿using CostObject.Application.Features.IntegrationEventConsumers;
+using CostObject.Application.Interfaces.Persistence;
 using CostObject.Infrastructure.Persistence;
 using CostObject.Infrastructure.Persistence.Repositories;
 using CostObject.Infrastructure.Security;
@@ -33,7 +34,7 @@ namespace CostObject.Infrastructure
 
             services.AddMassTransit(busConfigurator =>
             {
-                busConfigurator.AddConsumer<EmployeeEmployeeGroupAssignmentChangedIntegrationEventConsumer>();
+                busConfigurator.AddConsumer<EmployeeGroupDeletedConsumer>();
 
                 busConfigurator.UsingRabbitMq((context, cfg) =>
                 {

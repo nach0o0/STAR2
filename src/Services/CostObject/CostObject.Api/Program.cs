@@ -1,11 +1,13 @@
+using CostObject.Application;
+using CostObject.Infrastructure;
 using Shared.Application;
 using Shared.AspNetCore;
 using Shared.Infrastructure;
-using Shared.Clients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Shared.AspNetCore.Extensions;
 using Shared.AspNetCore.Middleware;
+using Shared.Clients;
 using Shared.Options;
 using Shared.Security.Extensions;
 using System.Text;
@@ -16,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 // --- DI Konfiguration ---
 builder.Services.AddHttpContextAccessor();
 
-var attendanceApplicationAssembly = typeof(Attendance.Application.DependencyInjection).Assembly;
+var attendanceApplicationAssembly = typeof(CostObject.Application.DependencyInjection).Assembly;
 builder.Services
     .AddApplicationServices()
     .AddInfrastructureServices(builder.Configuration)
@@ -66,7 +68,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-await app.RegisterServicePermissionsAsync("Attendance", allPermissions);
+await app.RegisterServicePermissionsAsync("CostObject", allPermissions);
 
 // --- HTTP Request Pipeline ---
 if (app.Environment.IsDevelopment())

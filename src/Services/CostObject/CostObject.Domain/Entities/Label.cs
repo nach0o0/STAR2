@@ -1,4 +1,5 @@
-﻿using Shared.Domain.Abstractions;
+﻿using CostObject.Domain.Events.Labels;
+using Shared.Domain.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,25 @@ namespace CostObject.Domain.Entities
             Name = name;
             EmployeeGroupId = employeeGroupId;
             CreatedAt = DateTime.UtcNow;
+
+            AddDomainEvent(new LabelCreatedEvent(this));
+        }
+
+        public void Update(string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName) || Name == newName)
+            {
+                return;
+            }
+
+            Name = newName;
+            UpdatedAt = DateTime.UtcNow;
+            AddDomainEvent(new LabelUpdatedEvent(this));
+        }
+
+        public void PrepareForDeletion()
+        {
+            AddDomainEvent(new LabelDeletedEvent(this));
         }
     }
 }

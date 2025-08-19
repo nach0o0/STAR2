@@ -12,5 +12,7 @@ namespace CostObject.Application.Interfaces.Persistence
         Task<HierarchyDefinition?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task AddAsync(HierarchyDefinition hierarchyDefinition, CancellationToken cancellationToken = default);
         void Delete(HierarchyDefinition hierarchyDefinition);
+        Task<List<HierarchyDefinition>> FindByRequiredBookingLevelIdAsync(Guid hierarchyLevelId, CancellationToken cancellationToken = default);
+        Task<List<HierarchyDefinition>> GetByGroupIdAsync(Guid employeeGroupId, CancellationToken cancellationToken = default);
     }
 }

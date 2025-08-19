@@ -12,5 +12,9 @@ namespace CostObject.Application.Interfaces.Persistence
         Task<HierarchyLevel?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task AddAsync(HierarchyLevel hierarchyLevel, CancellationToken cancellationToken = default);
         void Delete(HierarchyLevel hierarchyLevel);
+        Task<bool> DepthExistsInHierarchyAsync(int depth, Guid hierarchyDefinitionId, CancellationToken cancellationToken = default);
+        Task<bool> IsHierarchyDefinitionInUseAsync(Guid hierarchyDefinitionId, CancellationToken cancellationToken = default);
+        Task<List<HierarchyLevel>> GetByHierarchyDefinitionIdAsync(Guid hierarchyDefinitionId, CancellationToken cancellationToken = default);
+        Task<List<HierarchyLevel>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
     }
 }
