@@ -24,11 +24,7 @@ namespace Planning.Infrastructure.Persistence
 
         }
 
-        public DbSet<Domain.Entities.CostObject> CostObjects { get; set; }
-        public DbSet<Label> Labels { get; set; }
-        public DbSet<HierarchyDefinition> HierarchyDefinitions { get; set; }
-        public DbSet<HierarchyLevel> HierarchyLevels { get; set; }
-        public DbSet<CostObjectRequest> CostObjectRequests { get; set; }
+        public DbSet<PlanningEntry> PlanningEntries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

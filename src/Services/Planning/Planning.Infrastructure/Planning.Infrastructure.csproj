@@ -31,9 +31,4 @@
     <ProjectReference Include="..\Planning.Application\Planning.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\Configurations\" />
-    <Folder Include="Persistence\Repositories\" />
-  </ItemGroup>
-
 </Project>

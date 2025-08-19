@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Shared.Application.Interfaces.Persistence;
 using Shared.Application.Interfaces.Security;
 using Shared.Options;
+using Planning.Application.Features.IntegrationEventConsumers;
 
 namespace Planning.Infrastructure
 {
@@ -23,17 +24,14 @@ namespace Planning.Infrastructure
                 options.UseNpgsql(configuration.GetConnectionString("PlanningDbConnection")));
 
             services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<PlanningDbContext>());
-            services.AddScoped<ICostObjectRepository, CostObjectRepository>();
-            services.AddScoped<ICostObjectRequestRepository, CostObjectRequestRepository>();
-            services.AddScoped<IHierarchyDefinitionRepository, HierarchyDefinitionRepository>();
-            services.AddScoped<IHierarchyLevelRepository, HierarchyLevelRepository>();
-            services.AddScoped<ILabelRepository, LabelRepository>();
+            services.AddScoped<IPlanningEntryRepository, PlanningEntryRepository>();
 
             services.AddScoped<IUserContext, UserContext>();
 
             services.AddMassTransit(busConfigurator =>
             {
-                busConfigurator.AddConsumer<EmployeeEmployeeGroupAssignmentChangedIntegrationEventConsumer>();
+                busConfigurator.AddConsumer<CostObjectDeletedConsumer>();
+                busConfigurator.AddConsumer<EmployeeGroupDeletedConsumer>();
 
                 busConfigurator.UsingRabbitMq((context, cfg) =>
                 {

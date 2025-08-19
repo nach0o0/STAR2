@@ -51,10 +51,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-var allPermissions = CostObjectPermissions.AllPermissions
-    .Concat(HierarchyPermissions.AllPermissions)
-    .Concat(LabelPermissions.AllPermissions)
-    .Concat(CostObjectRequestPermissions.AllPermissions);
+var allPermissions = PlanningPermissions.AllPermissions;
 
 // Registriert alle Policies aus allen Listen.
 builder.Services.AddPermissionsAuthorization(allPermissions);

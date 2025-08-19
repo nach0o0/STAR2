@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Attendance.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/work-models")]
     [Authorize]
     public class WorkModelsController : ControllerBase
     {

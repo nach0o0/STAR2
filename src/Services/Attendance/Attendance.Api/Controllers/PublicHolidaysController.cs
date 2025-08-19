@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Attendance.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/public-holidays")]
     [Authorize]
     public class PublicHolidaysController : ControllerBase
     {

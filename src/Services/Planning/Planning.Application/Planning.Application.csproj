@@ -19,11 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Commands\" />
     <Folder Include="Features\DomainEventHandlers\" />
-    <Folder Include="Features\IntegrationEventConsumers\" />
-    <Folder Include="Features\Queries\" />
-    <Folder Include="Interfaces\Persistence\" />
   </ItemGroup>
 
 </Project>

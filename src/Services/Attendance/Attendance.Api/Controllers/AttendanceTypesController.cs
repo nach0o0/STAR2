@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Attendance.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/attendance-types")]
     [Authorize]
     public class AttendanceTypesController : ControllerBase
     {
