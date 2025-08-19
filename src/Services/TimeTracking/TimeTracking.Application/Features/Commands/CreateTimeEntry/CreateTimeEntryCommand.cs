@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shared.Application.Interfaces.Messaging;
 
 namespace TimeTracking.Application.Features.Commands.CreateTimeEntry
 {
-    internal class CreateTimeEntryCommand
-    {
-    }
+    public record CreateTimeEntryCommand(
+        Guid? EmployeeId,
+        Guid? CostObjectId,
+        DateTime EntryDate,
+        decimal Hours,
+        decimal HourlyRate,
+        string? Description,
+        bool CreateAnonymously
+    ) : ICommand<CreateTimeEntryCommandResult>;
 }

@@ -34,6 +34,7 @@ namespace CostObject.Application.Features.DomainEventHandlers.CostObjectRequests
             if (costObjectToDelete != null)
             {
                 // 2. Entferne die abgelehnte Kostenstelle aus der Datenbank.
+                costObjectToDelete.PrepareForDeletion();
                 _costObjectRepository.Delete(costObjectToDelete);
             }
 

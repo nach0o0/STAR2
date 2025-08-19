@@ -3,6 +3,7 @@ using Organization.Contracts.Responses;
 using Shared.Application.Interfaces.Infrastructure;
 using System.Net;
 using System.Net.Http.Json;
+using static Shared.Application.Interfaces.Infrastructure.IOrganizationServiceClient;
 
 namespace Shared.Clients
 {
@@ -69,6 +70,20 @@ namespace Shared.Clients
 
             return await response.Content.ReadFromJsonAsync<List<EmployeeResponse>>(cancellationToken: cancellationToken)
                    ?? new List<EmployeeResponse>();
+        }
+
+        public async Task<List<EmployeeDto>> GetEmployeesByIdsAsync(List<Guid> employeeIds, CancellationToken cancellationToken = default)
+        {
+            if (employeeIds == null || !employeeIds.Any())
+            {
+                return new List<EmployeeDto>();
+            }
+
+            // Dieser Endpunkt muss im OrganizationService erstellt werden
+            var response = await _httpClient.PostAsJsonAsync("/api/internal/employees/by-ids", new { employeeIds }, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<List<EmployeeDto>>() ?? new List<EmployeeDto>();
         }
     }
 }

@@ -9,6 +9,7 @@ using CostObject.Application.Features.Queries.GetChildCostObjects;
 using CostObject.Application.Features.Queries.GetCostObjectById;
 using CostObject.Application.Features.Queries.GetCostObjectHierarchy;
 using CostObject.Application.Features.Queries.GetCostObjectsByGroup;
+using CostObject.Application.Features.Queries.GetCostObjectsByIds;
 using CostObject.Application.Features.Queries.GetTopLevelCostObjectsByGroup;
 using CostObject.Contracts.Requests;
 using CostObject.Contracts.Responses;
@@ -205,6 +206,16 @@ namespace CostObject.Api.Controllers
             return Ok(response);
         }
 
+        [HttpPost("by-ids")]
+        public async Task<IActionResult> GetByIds([FromBody] GetCostObjectsByIdsRequest request)
+        {
+            var query = new GetCostObjectsByIdsQuery(request.CostObjectIds);
+            var result = await _sender.Send(query);
+
+            var response = result.Select(r => new CostObjectSummaryResponse(r.Id, r.Name, r.EmployeeGroupId));
+
+            return Ok(response);
+        }
 
 
 

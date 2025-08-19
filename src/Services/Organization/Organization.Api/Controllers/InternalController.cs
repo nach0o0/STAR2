@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Organization.Application.Features.Queries.GetEmployeeById;
 using Organization.Application.Features.Queries.GetEmployeeInfoByEmployeeId;
 using Organization.Application.Features.Queries.GetEmployeeInfoByUserId;
+using Organization.Application.Features.Queries.GetEmployeesByIds;
 using Organization.Application.Features.Queries.GetEmployeesByUserIds;
 using Organization.Contracts.Requests;
 using Organization.Contracts.Responses;
@@ -67,6 +69,14 @@ namespace Organization.Api.Controllers
                 queryResult.OrganizationId,
                 queryResult.EmployeeGroupIds);
 
+            return Ok(response);
+        }
+        [HttpPost("employees/by-ids")]
+        public async Task<IActionResult> GetByIds([FromBody] GetEmployeesByIdsRequest request)
+        {
+            var query = new GetEmployeesByIdsQuery(request.EmployeeIds);
+            var result = await _sender.Send(query);
+            var response = result.Select(r => new EmployeeSummaryResponse(r.Id, r.FirstName, r.LastName));
             return Ok(response);
         }
     }

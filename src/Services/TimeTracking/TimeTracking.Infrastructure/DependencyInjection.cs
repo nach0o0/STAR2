@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Shared.Application.Interfaces.Persistence;
 using Shared.Application.Interfaces.Security;
 using Shared.Options;
+using TimeTracking.Application.Features.IntegrationEventConsumers;
 
 namespace TimeTracking.Infrastructure
 {
@@ -29,7 +30,9 @@ namespace TimeTracking.Infrastructure
 
             services.AddMassTransit(busConfigurator =>
             {
-                busConfigurator.AddConsumer<EmployeeEmployeeGroupAssignmentChangedIntegrationEventConsumer>();
+                busConfigurator.AddConsumer<CostObjectDeletedConsumer>();
+                busConfigurator.AddConsumer<CostObjectEntriesReassignedConsumer>();
+                busConfigurator.AddConsumer<EmployeeGroupDeletedConsumer>();
 
                 busConfigurator.UsingRabbitMq((context, cfg) =>
                 {

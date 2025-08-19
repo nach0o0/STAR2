@@ -34,6 +34,11 @@ namespace Shared.Clients
                 client.BaseAddress = new Uri(configuration["ApiClients:AuthServiceUrl"]!);
             });
 
+            services.AddHttpClient<ICostObjectServiceClient, CostObjectServiceClient>(client =>
+            {
+                client.BaseAddress = new Uri(configuration["ApiClients:CostObjectServiceUrl"]!);
+            });
+
             return services;
         }
     }

@@ -5,6 +5,8 @@ namespace Shared.Application.Interfaces.Infrastructure
 {
     public interface IOrganizationServiceClient
     {
+        public record EmployeeDto(Guid Id, string FirstName, string LastName);
+
         Task<(Guid EmployeeId, Guid? OrganizationId, List<Guid> EmployeeGroupIds)?> GetEmployeeInfoByUserIdAsync(
             Guid userId,
             CancellationToken cancellationToken = default);
@@ -18,5 +20,7 @@ namespace Shared.Application.Interfaces.Infrastructure
             CancellationToken cancellationToken = default);
 
         Task<List<EmployeeResponse>> GetEmployeesByEmployeeGroupAsync(Guid employeeGroupId, CancellationToken cancellationToken = default);
+
+        Task<List<EmployeeDto>> GetEmployeesByIdsAsync(List<Guid> employeeIds, CancellationToken cancellationToken = default);
     }
 }

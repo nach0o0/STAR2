@@ -19,5 +19,6 @@ namespace Organization.Application.Interfaces.Persistence
         Task<Employee?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
         Task<List<Employee>> GetByUserIdsAsync(List<Guid> userIds, CancellationToken cancellationToken = default);
         Task<List<Employee>> GetByEmployeeGroupIdAsync(Guid employeeGroupId, CancellationToken cancellationToken = default);
+        Task<List<Employee>> GetByIdsAsync(IEnumerable<Guid> employeeIds, CancellationToken cancellationToken = default);
     }
 }

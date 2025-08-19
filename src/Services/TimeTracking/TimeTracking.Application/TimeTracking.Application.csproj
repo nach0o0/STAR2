@@ -19,12 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Commands\DeleteTimeEntry\" />
-    <Folder Include="Features\Commands\AnonymizeTimeEntry\" />
-    <Folder Include="Features\Commands\UpdateTimeEntry\" />
     <Folder Include="Features\DomainEventHandlers\" />
-    <Folder Include="Features\IntegrationEventConsumers\" />
-    <Folder Include="Features\Queries\" />
   </ItemGroup>
 
 </Project>

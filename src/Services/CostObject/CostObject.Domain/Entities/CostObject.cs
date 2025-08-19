@@ -91,5 +91,10 @@ namespace CostObject.Domain.Entities
 
             AddDomainEvent(new CostObjectDeactivatedEvent(this));
         }
+
+        public void PrepareForDeletion()
+        {
+            AddDomainEvent(new CostObjectDeletedEvent(this));
+        }
     }
 }

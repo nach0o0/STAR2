@@ -47,6 +47,7 @@ namespace CostObject.Application.Features.IntegrationEventConsumers
             var costObjects = await _costObjectRepository.GetByGroupIdAsync(groupId, context.CancellationToken);
             foreach (var costObject in costObjects)
             {
+                costObject.PrepareForDeletion();
                 _costObjectRepository.Delete(costObject);
             }
 

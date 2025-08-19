@@ -82,5 +82,12 @@ namespace Organization.Infrastructure.Persistence.Repositories
                 .Where(e => e.EmployeeGroupLinks.Any(l => l.EmployeeGroupId == employeeGroupId))
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<List<Employee>> GetByIdsAsync(IEnumerable<Guid> employeeIds, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Employees
+                .Where(e => employeeIds.Contains(e.Id))
+                .ToListAsync(cancellationToken);
+        }
     }
 }
